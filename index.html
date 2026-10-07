@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>일곱 개의 사건 | 읽기 및 에세이 과제</title>
+<style>
+:root {
+  --ink: #1d1d1f;
+  --secondary: #6e6e73;
+  --tertiary: #86868b;
+  --line: #d2d2d7;
+  --soft-line: rgba(0,0,0,.08);
+  --paper: #ffffff;
+  --soft: #f5f5f7;
+  --accent: #0066cc;
+  --nav: rgba(255,255,255,.82);
+  --max-reading: 780px;
+  --max-wide: 1120px;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", "Segoe UI", sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+a:focus-visible { outline: 3px solid rgba(0,102,204,.35); outline-offset: 4px; border-radius: 4px; }
+
+.site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: 52px;
+  border-bottom: 1px solid rgba(0,0,0,.08);
+  background: var(--nav);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+}
+.nav-inner {
+  max-width: var(--max-wide);
+  height: 100%;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+.nav-title {
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 650;
+  letter-spacing: -.01em;
+  white-space: nowrap;
+}
+.nav-links { display: flex; align-items: center; gap: 24px; }
+.nav-links a {
+  color: #424245;
+  font-size: 12px;
+  line-height: 1;
+  text-decoration: none;
+}
+.nav-links a:hover { color: var(--ink); }
+
+.page { width: 100%; margin: 0; }
+.hero {
+  min-height: 660px;
+  display: grid;
+  place-items: center;
+  padding: 90px 24px 110px;
+  text-align: center;
+  background: #fff;
+}
+.hero-inner { max-width: 980px; margin: 0 auto; }
+.eyebrow {
+  margin: 0 0 22px;
+  color: var(--secondary);
+  font-size: 19px;
+  line-height: 1.25;
+  font-weight: 600;
+  letter-spacing: -.02em;
+}
+h1 {
+  margin: 0;
+  color: var(--ink);
+  font-size: clamp(52px, 7.2vw, 92px);
+  line-height: .98;
+  font-weight: 720;
+  letter-spacing: -.06em;
+  word-break: keep-all;
+  overflow-wrap: normal;
+  line-break: strict;
+  text-wrap: balance;
+}
+.hero .subtitle {
+  max-width: 620px;
+  margin: 30px auto 0;
+  color: var(--secondary);
+  font-size: clamp(20px, 2.2vw, 28px);
+  line-height: 1.36;
+  font-weight: 430;
+  letter-spacing: -.025em;
+}
+.hero-rule {
+  width: 36px;
+  height: 4px;
+  margin: 38px auto 0;
+  background: var(--ink);
+  border-radius: 999px;
+}
+
+.case {
+  max-width: var(--max-reading);
+  margin: 0 auto;
+  padding: 116px 24px 112px;
+  scroll-margin-top: 58px;
+}
+.case + .case { border-top: 1px solid var(--soft-line); }
+.case-title {
+  margin: 0 0 34px;
+  color: var(--ink);
+  font-size: clamp(34px, 4vw, 48px);
+  line-height: 1.12;
+  font-weight: 690;
+  letter-spacing: -.045em;
+  word-break: normal;
+  overflow-wrap: normal;
+  line-break: strict;
+  text-wrap: wrap;
+}
+.case-title .title-word {
+  display: inline-block;
+  white-space: nowrap;
+}
+.case p {
+  margin: 0 0 24px;
+  color: #343437;
+  font-size: clamp(18px, 1.7vw, 20px);
+  line-height: 1.78;
+  font-weight: 400;
+  letter-spacing: -.012em;
+  word-break: keep-all;
+  text-align: left;
+}
+.case p:last-child { margin-bottom: 0; }
+em { font-family: ui-serif, Georgia, "Times New Roman", serif; }
+
+.assignment {
+  max-width: 980px;
+  margin: 70px auto 120px;
+  padding: 70px 76px 66px;
+  background: var(--soft);
+  border: 0;
+  border-radius: 28px;
+  scroll-margin-top: 76px;
+}
+.assignment h2 {
+  margin: 0 0 22px;
+  padding: 0;
+  border: 0;
+  color: var(--ink);
+  font-size: clamp(38px, 5vw, 58px);
+  line-height: 1;
+  font-weight: 710;
+  letter-spacing: -.05em;
+}
+.assignment > p {
+  max-width: 760px;
+  margin: 0 0 32px;
+  color: #424245;
+  font-size: 20px;
+  line-height: 1.65;
+  letter-spacing: -.015em;
+}
+.assignment ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--line);
+}
+.assignment li {
+  position: relative;
+  margin: 0;
+  padding: 15px 0 15px 28px;
+  border-bottom: 1px solid var(--line);
+  color: #343437;
+  font-size: 17px;
+  line-height: 1.6;
+}
+.assignment li::before {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 26px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ink);
+}
+.meta {
+  display: grid;
+  grid-template-columns: 120px minmax(0,1fr);
+  gap: 0 28px;
+  margin-top: 36px;
+  border-top: 1px solid var(--line);
+}
+.meta div {
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 15px;
+}
+.meta div:nth-child(odd) { color: var(--secondary); font-weight: 600; }
+.meta div:nth-child(even) { color: var(--ink); font-weight: 500; }
+
+.ai-record {
+  margin: 0;
+  padding: 108px 24px 116px;
+  background: #fff;
+  border-top: 1px solid var(--soft-line);
+  scroll-margin-top: 52px;
+}
+.ai-record-inner {
+  max-width: 980px;
+  margin: 0 auto;
+}
+.ai-kicker {
+  margin: 0 0 18px;
+  color: var(--secondary);
+  font-size: 14px;
+  line-height: 1.3;
+  font-weight: 650;
+  letter-spacing: -.01em;
+}
+.ai-record h2 {
+  margin: 0 0 22px;
+  color: var(--ink);
+  font-size: clamp(38px, 5vw, 58px);
+  line-height: 1;
+  font-weight: 710;
+  letter-spacing: -.05em;
+}
+.ai-intro {
+  max-width: 800px;
+  margin: 0 0 48px;
+  color: #424245;
+  font-size: 19px;
+  line-height: 1.7;
+  letter-spacing: -.015em;
+  word-break: keep-all;
+}
+.ai-fields {
+  border-top: 1px solid var(--line);
+}
+.ai-field {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr);
+  gap: 24px;
+  padding: 26px 0 28px;
+  border-bottom: 1px solid var(--line);
+}
+.ai-number {
+  color: var(--tertiary);
+  font-size: 14px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  padding-top: 4px;
+}
+.ai-field h3 {
+  margin: 0 0 6px;
+  color: var(--ink);
+  font-size: 20px;
+  line-height: 1.35;
+  letter-spacing: -.02em;
+}
+.ai-field p {
+  margin: 0;
+  color: var(--secondary);
+  font-size: 16px;
+  line-height: 1.65;
+  word-break: keep-all;
+}
+.ai-footnote {
+  margin: 26px 0 0;
+  color: var(--secondary);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.refs {
+  margin: 0;
+  padding: 88px 24px 100px;
+  background: var(--soft);
+  border-top: 0;
+  color: #515154;
+  font-size: 14px;
+  scroll-margin-top: 52px;
+}
+.refs > * { max-width: 900px; margin-left: auto; margin-right: auto; }
+.refs h2 {
+  margin-top: 0;
+  margin-bottom: 34px;
+  padding: 0;
+  border: 0;
+  color: var(--ink);
+  font-size: 28px;
+  line-height: 1.15;
+  letter-spacing: -.035em;
+}
+.refs ol { padding-left: 22px; }
+.refs li { margin: 0 0 16px; padding-left: 5px; line-height: 1.65; word-break: break-word; }
+.refs a { overflow-wrap: anywhere; }
+.note {
+  margin-top: 34px !important;
+  padding-top: 22px;
+  border-top: 1px solid var(--line);
+  color: var(--secondary);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+@media (max-width: 760px) {
+  .site-nav { height: 48px; }
+  .nav-inner { padding: 0 18px; }
+  .nav-title { font-size: 13px; }
+  .nav-links { gap: 15px; }
+  .nav-links a { font-size: 11px; }
+  .hero { min-height: 560px; padding: 80px 22px 90px; }
+  .eyebrow { font-size: 16px; margin-bottom: 18px; }
+  h1 { font-size: clamp(44px, 13vw, 64px); }
+  .hero .subtitle { margin-top: 24px; font-size: 20px; }
+  .case { padding: 82px 22px 78px; }
+  .case-title { margin-bottom: 26px; font-size: 34px; }
+  .case p { font-size: 18px; line-height: 1.72; }
+  .assignment { margin: 44px 16px 84px; padding: 48px 24px 42px; border-radius: 22px; }
+  .assignment h2 { font-size: 42px; }
+  .assignment > p { font-size: 18px; }
+  .ai-record { padding: 76px 22px 82px; }
+  .ai-record h2 { font-size: 42px; }
+  .ai-intro { font-size: 18px; margin-bottom: 36px; }
+  .ai-field { grid-template-columns: 44px minmax(0, 1fr); gap: 14px; padding: 22px 0 24px; }
+  .meta { grid-template-columns: 84px minmax(0,1fr); gap: 0 14px; }
+  .refs { padding: 66px 22px 78px; }
+}
+
+@media (max-width: 480px) {
+  .nav-links a:first-child { display: none; }
+  .hero { min-height: 520px; }
+  .case-title { font-size: 31px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
+@media print {
+  .site-nav { display: none; }
+  body { background: #fff; color: #000; font-size: 10.5pt; line-height: 1.55; }
+  .hero { min-height: 0; padding: 15mm 0 10mm; text-align: left; }
+  .hero-inner { max-width: none; }
+  .eyebrow { font-size: 11pt; margin-bottom: 5mm; }
+  h1 { font-size: 30pt; line-height: 1.05; }
+  .hero .subtitle { margin: 5mm 0 0; max-width: none; font-size: 14pt; }
+  .hero-rule { display: none; }
+  .case { max-width: none; padding: 10mm 0; break-inside: avoid; }
+  .case + .case { border-top: 1px solid #bbb; }
+  .case-title { font-size: 18pt; margin-bottom: 5mm; }
+  .case p { font-size: 10.5pt; line-height: 1.55; margin-bottom: 4mm; }
+  .assignment { margin: 10mm 0; padding: 10mm; border: 1px solid #bbb; border-radius: 0; background: #fff; }
+  .assignment h2 { font-size: 20pt; }
+  .ai-record { break-before: page; page-break-before: always; padding: 12mm 0 8mm; border-top: 0; }
+  .ai-record h2 { font-size: 20pt; }
+  .ai-intro { font-size: 10.5pt; }
+  .ai-field { grid-template-columns: 12mm 1fr; padding: 5mm 0; }
+  .ai-field h3 { font-size: 11pt; }
+  .ai-field p, .ai-footnote { font-size: 9.5pt; }
+  .refs { padding: 10mm 0 0; background: #fff; }
+  a { color: #000; text-decoration: none; }
+}
+</style>
+</head>
+<body><nav aria-label="페이지 탐색" class="site-nav">
+<div class="nav-inner">
+<a class="nav-title" href="#top">사례 읽기 및 에세이 과제</a>
+<div class="nav-links">
+<a href="#cases">사례</a>
+<a href="#assignment">과제</a>
+<a href="#ai-record">AI 사용 기록</a>
+<a href="#references">출처</a>
+</div>
+</div>
+</nav>
+<main class="page"><header class="hero" id="top"><div class="hero-inner"><p class="eyebrow">Reading Assignment</p><h1>일곱 개의 사건</h1><div class="subtitle">읽기 자료 및 짧은 에세이 과제</div><div aria-hidden="true" class="hero-rule"></div></div></header>
+<section class="case" id="cases">
+<div class="case-title"><span class="title-word">1.</span> <span class="title-word">갈레노스와</span> <span class="title-word">베살리우스</span> <span class="title-word">—</span> <span class="title-word">책에</span> <span class="title-word">적힌</span> <span class="title-word">몸과</span> <span class="title-word">눈앞의</span> <span class="title-word">몸</span></div>
+<p>
+      갈레노스(Galen, 약 129–216)는 로마제국 시대의 의사였다. 그는 해부학, 생리학, 질병과 치료에 관한 방대한 저술을 남겼고,
+      그의 의학은 이후 유럽과 이슬람권 의학에 오랫동안 영향을 미쳤다. 특히 르네상스 시대까지 갈레노스의 저술은 의학 교육에서
+      매우 중요한 권위를 가졌다.
+    </p>
+<p>
+      그러나 갈레노스가 오늘날과 같은 방식으로 인간의 몸을 자유롭게 해부했던 것은 아니었다. 그는 원숭이와 돼지 등 여러 동물을 해부했고,
+      그 결과를 인간의 몸에도 상당 부분 적용했다. 동물과 인간의 구조가 비슷한 경우도 많았기 때문에 그의 설명 가운데 상당 부분은 유용했다.
+      동시에 동물과 인간의 해부학적 차이 때문에 몇몇 잘못된 설명도 포함되었다.
+    </p>
+<p>
+      16세기의 Andreas Vesalius(1514–1564)는 직접 인간의 시신을 해부하면서 자신이 보는 구조를 기존 문헌과 비교했다.
+      1543년 그는 <em>De humani corporis fabrica</em>를 출판했다. 이 책은 정교한 인체 해부도를 포함했고,
+      직접적인 인간 해부를 바탕으로 갈레노스의 여러 설명을 확인하거나 수정했다. 베살리우스는 갈레노스를 완전히 버린 것이 아니라,
+      책의 내용과 자신의 관찰이 일치하지 않을 때 무엇을 우선할 것인가에 대해 다른 태도를 취했다.
+    </p>
+</section>
+<section class="case" id="case-2">
+<div class="case-title"><span class="title-word">2.</span> <span class="title-word">갈릴레오</span> <span class="title-word">—</span> <span class="title-word">망원경으로</span> <span class="title-word">본</span> <span class="title-word">하늘</span></div>
+<p>
+      17세기 초 유럽에서는 우주의 구조에 관한 논쟁이 진행되고 있었다. 오랫동안 사용된 Ptolemy의 천문 체계에서는 지구가 우주의 중심에 놓였다.
+      1543년 Nicolaus Copernicus는 태양을 중심으로 지구를 포함한 행성들이 운동하는 체계를 제시했다. 당시 이 문제는 단순한 천문학의 문제만이 아니라,
+      자연철학과 신학, 그리고 사람들이 이해하던 우주의 질서와도 연결되어 있었다.
+    </p>
+<p>
+      Galileo Galilei(1564–1642)는 1609년부터 망원경을 천문 관측에 적극적으로 사용했다. 그는 달의 표면이 완벽하게 매끄럽지 않다는 점,
+      목성 주위를 도는 위성이 있다는 점, 금성이 여러 위상을 보인다는 점 등을 관측했다. 이러한 관측은 당시의 전통적인 우주관에 중요한 문제를 제기했고
+      Copernicus의 체계를 더 설득력 있게 만들었다.
+    </p>
+<p>
+      그러나 망원경 관측만으로 오늘날 알려진 태양 중심 태양계를 즉시 완전히 증명할 수 있었던 것은 아니다. 당시에는 Tycho Brahe가 제안한
+      다른 형태의 지구 중심 체계도 논의되고 있었다. 1616년 교회 당국은 Copernicus의 지구 운동에 관한 주장을 제한했고,
+      1632년 Galileo가 두 우주 체계를 비교한 책을 출판한 뒤 그는 로마로 소환되었다. 1633년 종교재판에서 그는 유죄 판결을 받았고
+      이후 가택연금 상태에서 연구를 계속했다.
+    </p>
+</section>
+<section class="case" id="case-3">
+<div class="case-title"><span class="title-word">3.</span> <span class="title-word">제멜바이스</span> <span class="title-word">—</span> <span class="title-word">두</span> <span class="title-word">개의</span> <span class="title-word">산과</span> <span class="title-word">병동</span></div>
+<p>
+      1840년대 빈 종합병원에는 두 개의 주요 산과 병동이 있었다. 한 병동에서는 의사와 의대생이 산모를 진료했고,
+      다른 병동에서는 주로 조산사가 담당했다. 당시 출산 후 고열과 감염 증상을 보이다 사망하는 산욕열은 매우 심각한 문제였다.
+    </p>
+<p>
+      Ignaz Semmelweis(1818–1865)는 두 병동의 사망률이 크게 다르다는 사실에 주목했다. 의사와 의대생은 부검을 한 뒤 산과 병동으로 이동하는 경우가 많았다.
+      Semmelweis는 부검한 시신에서 어떤 물질이 의사들의 손을 통해 산모에게 전달될 가능성을 생각했다. 당시에는 오늘날과 같은 미생물 감염 이론이
+      아직 확립되지 않은 상태였다.
+    </p>
+<p>
+      그는 의료진에게 환자를 진료하기 전에 chlorinated lime 용액으로 손을 씻게 했다. 이후 해당 병동의 산욕열 사망률은 크게 감소했다.
+      그러나 이러한 결과가 곧바로 의학계의 일반적인 설명으로 받아들여진 것은 아니었다. Semmelweis는 자신이 관찰한 현상을 당시 인정되던 질병 이론으로
+      충분히 설명할 수 없었고, 그의 주장에 회의적인 반응도 있었다. 이후 19세기 후반 Pasteur와 Koch 등을 거치면서 미생물과 감염에 관한 지식이 발전했다.
+    </p>
+</section>
+<section class="case" id="case-4">
+<div class="case-title"><span class="title-word">4.</span> <span class="title-word">우생학</span> <span class="title-word">—</span> <span class="title-word">유전을</span> <span class="title-word">이용하여</span> <span class="title-word">사회를</span> <span class="title-word">바꾼다는</span> <span class="title-word">생각</span></div>
+<p>
+      19세기 후반 유전에 대한 관심이 높아지면서 인간의 신체적·정신적 특성 역시 유전을 통해 개선할 수 있다는 생각이 등장했다.
+      Francis Galton은 이러한 생각에 ‘eugenics’라는 이름을 붙였다.
+    </p>
+<p>
+      20세기 초 미국에서는 우생학이 일부 대학, 연구기관, 의사, 사회운동가와 정치인들 사이에서 상당한 영향력을 갖게 되었다.
+      인간의 지능, 정신질환, 범죄, 빈곤, 알코올 의존 등 복잡한 특성을 유전과 연결하려는 연구가 진행되었다.
+      오늘날에는 이러한 연구 가운데 상당 부분이 부적절한 유전학적 가정, 부정확한 측정, 사회적 편견을 포함하고 있었다고 평가된다.
+      그러나 당시에는 이를 현대적 과학에 근거한 사회개혁으로 받아들인 사람들도 많았다.
+    </p>
+<p>
+      1907년 Indiana주는 미국에서 처음으로 우생학적 강제불임을 법으로 허용했다. 이후 여러 주가 유사한 법률을 만들었다.
+      ‘유전적으로 부적합하다’고 판단된 사람 등이 대상이 되었고, 병원과 주립시설의 의사와 관리자들이 누가 수술 대상이 될 것인지를 결정하는 경우가 있었다.
+      미국에서 이러한 제도에 의해 이루어진 강제불임은 약 60,000건으로 추정되며, California에서는 약 20,000명이 우생학법에 따라 불임수술을 받은 것으로 연구되어 있다.
+      1927년 미국 연방대법원은 <em>Buck v. Bell</em> 판결에서 Virginia주의 강제불임법을 인정했다.
+    </p>
+</section>
+<section class="case" id="case-5">
+<div class="case-title"><span class="title-word">5.</span> <span class="title-word">담배</span> <span class="title-word">—</span> <span class="title-word">과학적</span> <span class="title-word">논쟁과</span> <span class="title-word">기업의</span> <span class="title-word">메시지</span></div>
+<p>
+      20세기 초반까지 담배 흡연과 질병의 관계는 오늘날처럼 명확하게 알려져 있지 않았다. 그러나 20세기 중반부터 역학 연구와 의학 연구에서
+      흡연과 폐암을 비롯한 여러 질병 사이의 강한 관계가 보고되기 시작했다.
+    </p>
+<p>
+      담배회사들도 자체적으로 흡연, 니코틴과 건강에 관한 연구를 수행했다. 이후 법정에 제출된 기업 내부문서에는 회사들이 니코틴의 작용,
+      흡연 행동, 담배 설계와 니코틴 전달 등에 관해 광범위한 연구를 수행했던 사실이 기록되어 있다.
+    </p>
+<p>
+      그러나 대외적으로 전달된 메시지는 달랐다. 미국 연방법원이 이후 검토한 자료에 따르면 담배회사들은 흡연이 질병을 일으킨다는 과학적 증거를 공격하거나 왜곡하면서
+      그 관계가 아직 해결되지 않은 문제라는 인상을 만들었다. 또한 니코틴 중독성을 공개적으로 부정하고, ‘light’나 ‘low tar’ 담배가 일반 담배보다 덜 위험하다는 인상을 주는
+      마케팅을 실시했다.
+    </p>
+<p>
+      1999년 미국 정부는 주요 담배회사들과 관련 단체들을 RICO에 따라 민사소송했다. 2006년 미국 연방법원은 담배회사들이 장기간에 걸쳐
+      미국 대중을 속였다고 판단했다. 이후 법원은 담배회사들에게 흡연의 건강 위해성, 니코틴 중독성, light cigarette의 위험 등과 관련한
+      ‘corrective statements’를 발표하도록 명령했다.
+    </p>
+</section>
+<section class="case" id="case-6">
+<div class="case-title"><span class="title-word">6.</span> <span class="title-word">Frances</span> <span class="title-word">Kelsey</span> <span class="title-word">—</span> <span class="title-word">승인되지</span> <span class="title-word">않은</span> <span class="title-word">약</span></div>
+<p>
+      1950년대 후반과 1960년대 초 thalidomide라는 약물이 여러 나라에서 진정제와 수면제 등으로 사용되고 있었다.
+      미국에서는 William S. Merrell Company가 이 약을 ‘Kevadon’이라는 이름으로 판매하기 위해 1960년 FDA에 신약허가신청을 제출했다.
+    </p>
+<p>
+      FDA에서 이 신청서를 담당한 사람은 의사이자 약리학자인 Frances Oldham Kelsey였다. 그녀는 회사가 제출한 자료만으로는 약물의 안전성이 충분히 입증되지 않았다고 판단했다.
+      회사는 추가 자료를 계속 제출하며 승인을 요구했지만 Kelsey는 과학적으로 신뢰할 수 있는 안전성 자료가 부족하다는 이유로 신청을 승인하지 않았다.
+    </p>
+<p>
+      그 사이 thalidomide는 세계 여러 나라에서 사용되고 있었다. 1961년 독일과 호주의 연구자들은 임신 중 thalidomide 노출과 매우 드문 심각한 선천성 기형 사이의 관계를 보고하기 시작했다.
+      약물은 여러 국가의 시장에서 철수되었다. 미국에서는 정식 판매 승인을 받지 못했지만, 승인 전 시험 목적으로 이미 상당량이 배포된 상태였다.
+    </p>
+<p>
+      1962년 미국 의회는 Kefauver–Harris Drug Amendments를 통과시켰고, 이후 제약회사는 신약을 판매하기 전에 안전성뿐만 아니라 유효성에 대해서도
+      실질적인 증거를 FDA에 제출해야 했다. Kelsey는 같은 해 대통령으로부터 Distinguished Federal Civilian Service Award를 받았다.
+    </p>
+</section>
+<section class="case" id="case-7">
+<div class="case-title"><span class="title-word">7.</span> <span class="title-word">타미플루</span></div>
+<p>
+      Oseltamivir는 influenza virus의 neuraminidase를 억제하는 항바이러스제이며 Roche가 Tamiflu라는 상품명으로 판매했다.
+      2000년대 들어 조류인플루엔자와 새로운 influenza pandemic에 대한 우려가 커지면서 여러 국가가 oseltamivir를 비축했다.
+      2009년 influenza A(H1N1) virus가 세계적으로 확산되자 한국 정부도 항바이러스제 비축량을 기존 531만 명분에서 1,031만 명분으로 늘리기로 결정했다.
+    </p>
+<p>
+      당시 oseltamivir의 효과를 평가한 임상시험들은 이미 존재했다. 그러나 제조사가 수행한 모든 임상시험의 상세 결과가 학술논문으로 공개된 것은 아니었다.
+      Cochrane 연구자들은 전체 clinical study report를 확보하여 다시 분석했고, 2014년 발표한 분석에서 oseltamivir를 복용한 성인의 증상 완화 시간은
+      placebo보다 평균 16.8시간 짧았다. 같은 분석에서는 성인의 병원 입원이 유의하게 감소한다는 근거가 확인되지 않았으며, nausea와 vomiting은 증가했다.
+    </p>
+<p>
+      이후 더 많은 무작위시험을 포함한 분석이 이루어졌다. 2025년 <em>JAMA Internal Medicine</em>에 발표된 network meta-analysis는
+      비중증 influenza 환자 34,332명이 포함된 73개 무작위시험을 검토했다. Oseltamivir를 사용한 경우 증상이 완화될 때까지의 시간은
+      표준치료 또는 placebo보다 평균 0.75일 짧았다. 이를 시간으로 환산하면 0.75 × 24 = 약 18시간이다.
+    </p>
+<p>
+      같은 분석에서 고위험 환자의 병원 입원은 표준치료 또는 placebo에서 1,000명당 약 21명, oseltamivir에서 약 17명으로 추정되었다.
+      차이는 1,000명당 4명 감소였고 95% 신뢰구간은 1,000명당 10명 감소에서 4명 증가까지였다. 연구진은 oseltamivir가 비중증 influenza 환자의
+      병원 입원과 사망에 거의 또는 전혀 영향을 주지 않는다고 평가했다. 치료와 관련된 adverse event는 1,000명당 약 122명에서 150명으로 증가했다.
+    </p>
+<p>
+      WHO는 2024년 진료지침에서 의심되거나 확인된 비중증 seasonal influenza 환자에게 oseltamivir를 투여하지 않을 것을 강하게 권고했다.
+      WHO는 증상 완화 시간에 중요한 효과가 없을 가능성이 높고, 병원 입원이나 사망에는 거의 또는 전혀 차이가 없으며, adverse event는 증가할 가능성이 있다고 판단했다.
+    </p>
+<p>
+      한편 중증 환자와 입원환자에서는 근거와 권고가 다르다. 미국 CDC는 2026년 현재 입원환자, 중증·진행성 influenza 환자와 합병증 위험이 높은 환자에게
+      가능한 한 빨리 항바이러스 치료를 시작하도록 권고하며, 입원환자에서는 oseltamivir를 권장한다. CDC는 동시에 입원환자에서 neuraminidase inhibitor 단독치료를
+      placebo와 비교한 충분한 규모의 무작위시험이 아직 완료되지 않았다고 설명한다. 이 환자군의 권고에는 관찰연구에서 보고된 임상적 이득도 사용된다.
+    </p>
+</section>
+<section class="assignment" id="assignment">
+<h2>과제</h2>
+<p>
+      위의 사례들을 모두 읽으십시오. 읽은 뒤, 이 사례들을 통해 자신이 중요하다고 생각하게 된 <strong>질문 하나를 스스로 정하십시오.</strong>
+      그리고 그 질문에 대한 자신의 생각을 A4 1쪽 분량으로 작성하십시오.
+    </p>
+<ul>
+<li>글의 첫 부분에 자신이 정한 질문을 명확하게 제시합니다.</li>
+<li>사례의 내용을 단순히 요약하는 데 그치지 않습니다.</li>
+<li>제시된 사례 중 최소 3개를 자신의 논의를 위한 근거로 사용합니다.</li>
+<li>사례들이 서로 비슷한 부분뿐 아니라 서로 다르게 보이는 부분도 고려합니다.</li>
+<li>자신의 주장과 그 이유가 논리적으로 연결되도록 작성합니다.</li>
+<li>제시된 사례와 다른 사례를 추가하여도 좋습니다.</li>
+<li>AI 도구를 사용해도 됩니다. AI 사용 자체는 제한하지 않습니다. 다만 AI를 사용한 경우에는 아래의 <strong>AI 사용 기록</strong>을 본문과 분리하여 별지로 작성합니다.</li>
+<li>정답은 없습니다. 어떤 결론을 내렸는가보다, 그 결론에 어떻게 도달했는지를 중요하게 봅니다.</li>
+</ul>
+<div class="meta">
+<div>분량</div><div>A4 1쪽</div>
+<div>형식</div><div>자유 형식</div>
+<div>제목</div><div>자신의 글에 적절한 제목을 직접 정할 것</div>
+<div>AI 사용</div><div>허용. 사용한 경우 별지에 사용 과정을 기록할 것</div>
+</div>
+</section>
+
+<section class="ai-record" id="ai-record">
+<div class="ai-record-inner">
+<p class="ai-kicker">별지 · AI를 사용한 경우에만 작성</p>
+<h2>AI 사용 기록</h2>
+<p class="ai-intro">
+      AI를 사용한 경우, 아래 내용을 본문과 분리하여 작성하십시오. 이 기록은 <strong>A4 1쪽 본문 분량에 포함하지 않습니다.</strong>
+      사용 여부 자체보다, 무엇을 위해 어떤 방식으로 사용했고 그 결과를 어떻게 판단하고 수정했는지를 구체적으로 기록합니다.
+    </p>
+<div class="ai-fields">
+<div class="ai-field"><span class="ai-number">01</span><div><h3>사용한 AI 또는 도구</h3><p>사용한 서비스나 모델의 이름을 적습니다.</p></div></div>
+<div class="ai-field"><span class="ai-number">02</span><div><h3>사용 목적</h3><p>무엇을 알아보기 위해, 또는 글쓰기의 어떤 단계에서 AI를 사용했는지 적습니다.</p></div></div>
+<div class="ai-field"><span class="ai-number">03</span><div><h3>사용 방법</h3><p>어떤 질문이나 지시를 했는지 설명하고, 필요하면 대표적인 prompt를 예로 제시합니다.</p></div></div>
+<div class="ai-field"><span class="ai-number">04</span><div><h3>얻은 내용</h3><p>AI를 통해 새롭게 얻은 정보, 관점, 아이디어 또는 문장 구조가 무엇이었는지 적습니다.</p></div></div>
+<div class="ai-field"><span class="ai-number">05</span><div><h3>검토와 수정</h3><p>AI의 답변을 어떻게 확인했으며, 그대로 사용하지 않고 어떤 부분을 선택·수정·삭제했는지 적습니다.</p></div></div>
+<div class="ai-field"><span class="ai-number">06</span><div><h3>최종 글에 반영한 내용</h3><p>AI 사용 결과가 최종 본문에 실제로 어떻게 반영되었는지 간단히 설명합니다.</p></div></div>
+</div>
+<p class="ai-footnote">AI를 사용하지 않은 경우에는 이 별지를 제출하지 않아도 됩니다.</p>
+</div>
+</section>
+<section class="refs" id="references">
+<h2>자료 출처</h2>
+<ol>
+<li>U.S. National Library of Medicine, Historical Anatomies on the Web; Anatomy and Print Technology.
+        <a href="https://www.nlm.nih.gov/hmd/research-tools/dream_anatomy_timeline.html">https://www.nlm.nih.gov/hmd/research-tools/dream_anatomy_timeline.html</a></li>
+<li>Stanford Encyclopedia of Philosophy, “Galileo Galilei.”
+        <a href="https://plato.stanford.edu/entries/galileo/">https://plato.stanford.edu/entries/galileo/</a></li>
+<li>WHO, Guidelines on Hand Hygiene in Health Care, historical perspective on Semmelweis.
+        <a href="https://www.ncbi.nlm.nih.gov/books/NBK144018/">https://www.ncbi.nlm.nih.gov/books/NBK144018/</a></li>
+<li>Spiegel AM, “A Brief History of Eugenics in America,” and related historical reviews.
+        <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC6736015/">https://pmc.ncbi.nlm.nih.gov/articles/PMC6736015/</a></li>
+<li>U.S. Department of Justice, United States v. Philip Morris USA Inc. and related tobacco litigation materials.
+        <a href="https://www.justice.gov/archives/opa/pr/tobacco-companies-begin-issuing-court-ordered-statements-tobacco-racketeering-suit">DOJ corrective statements summary</a></li>
+<li>U.S. Food and Drug Administration, Frances Oldham Kelsey and the history of thalidomide regulation.
+        <a href="https://www.fda.gov/about-fda/fda-history-exhibits/frances-oldham-kelsey-medical-reviewer-famous-averting-public-health-tragedy">FDA history exhibit</a></li>
+<li>Jefferson T. et al., “Oseltamivir for influenza in adults and children: systematic review of clinical study reports and summary of regulatory comments,” <em>BMJ</em> (2014).
+        <a href="https://pubmed.ncbi.nlm.nih.gov/24811411/">PubMed record</a></li>
+<li>Gao Y. et al., “Antiviral Medications for Treatment of Nonsevere Influenza: A Systematic Review and Network Meta-Analysis,” <em>JAMA Internal Medicine</em> (2025), 185(3), 293–301.
+        <a href="https://jamanetwork.com/journals/jamainternalmedicine/fullarticle/2829156">JAMA Network</a></li>
+<li>World Health Organization, <em>Clinical practice guidelines for influenza</em> (2024).
+        <a href="https://www.who.int/publications/i/item/9789240097759">WHO guideline</a></li>
+<li>U.S. Centers for Disease Control and Prevention, “Influenza Antiviral Medications: Summary for Clinicians,” reviewed March 10, 2026.
+        <a href="https://www.cdc.gov/flu/hcp/antivirals/summary-clinicians.html">CDC guidance</a></li>
+<li>대한민국 정책브리핑, 2009년 신종인플루엔자 항바이러스제 비축 확대 관련 정부 발표.
+        <a href="https://www.korea.kr/news/policyNewsView.do?newsId=148675312">정책브리핑</a></li>
+</ol>
+<p class="note">이 자료는 사건의 개요를 학생 읽기용으로 정리한 것이며, 세부적인 역사적 해석은 각 출처와 관련 연구를 추가로 확인할 수 있습니다.</p>
+</section>
+</main>
+</body>
+</html>
