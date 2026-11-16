@@ -1,0 +1,533 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#101c20">
+<title>ACE Virtual Sorption Laboratory · 미지의 흡착계</title>
+<style>
+:root{--ink:#182c30;--ink2:#435b5d;--muted:#6d8181;--bg:#edf1f0;--paper:#fff;--line:#d5dfdd;--teal:#177b73;--mint:#3bd2b1;--amber:#b67f37;--danger:#bc594a;--dark:#111f23;--dark2:#1b3138;--shadow:0 10px 25px rgba(20,44,46,.045);font-synthesis:none;color-scheme:light}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:var(--ink);background:var(--bg);font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI","Malgun Gothic","Apple SD Gothic Neo",sans-serif;-webkit-font-smoothing:antialiased}button,input,select{font:inherit}button{cursor:pointer;transition:background .16s,border .16s,opacity .16s,transform .16s}button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid #56bbab;outline-offset:3px}button:disabled{opacity:.4;cursor:not-allowed;transform:none}button:not(:disabled):active{transform:translateY(1px)}a{color:inherit}h1,h2,h3,p{margin-top:0}h1,h2,h3{letter-spacing:-.04em}b,strong{font-weight:720}.topbar{background:#101d21;border-bottom:1px solid #304248;color:#eaf4f1}.top-inner{max-width:1480px;min-height:74px;padding:0 32px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:20px}.brand{display:flex;align-items:center;gap:13px;text-decoration:none}.brand-mark{width:35px;height:35px;display:grid;place-items:center;border:1px solid #83a7a2;transform:rotate(-2deg);position:relative;color:#d9f2e9}.brand-a{font-weight:850;font-size:24px;line-height:1}.brand-line{position:absolute;width:21px;height:1px;background:#3acbac;bottom:4px;left:6px}.brand-words{font-size:14px;letter-spacing:.125em;font-weight:840}.brand-words small{display:block;font-size:8px;color:#789e9b;letter-spacing:.23em;font-weight:650;margin-top:1px}.top-right{display:flex;align-items:center;gap:36px}.top-label{color:#90a9a9;font-size:10px;letter-spacing:.12em;font-weight:700}.top-version{color:#577a79}.system-led{display:flex;gap:10px;align-items:center;letter-spacing:.1em;font:700 10px/1.5 ui-monospace,Consolas,monospace;color:#c5d4d1}.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#d5aa5c;box-shadow:0 0 0 4px rgba(213,170,92,.08)}.dot.on{background:#40d9b4;box-shadow:0 0 0 4px rgba(64,217,180,.1)}.dot.warn{background:#d8885d}main{max-width:1480px;margin:0 auto;padding:0 32px 40px}.masthead{min-height:196px;display:flex;align-items:center;justify-content:space-between;gap:26px;padding:38px 0 31px}.eyebrow,.section-index,.plot-kicker,.run-title,.stage-label,.metric-label,.model-caption,.top-label,.machine-overlay-title,.live-tag,.instruction-badge,.console-bottom-mark,.plot-pill,.log-count{font:780 10px/1.5 ui-monospace,Consolas,monospace;letter-spacing:.11em}.eyebrow{color:#54877d;margin-bottom:13px}.line-dash{display:inline-block;vertical-align:middle;width:19px;height:1px;background:currentColor;margin-right:8px}h1{font-size:clamp(30px,3.25vw,50px);line-height:1.06;font-weight:780;letter-spacing:-.055em;margin-bottom:13px}h1 em{font-style:normal;color:#458678;font-weight:460}.lead{font-size:13px;line-height:1.75;color:#71827e;max-width:680px;margin:0}.lead strong{color:#2e6660}.run-summary{padding:2px 0 2px 24px;min-width:218px;border-left:1px solid #d3dddd;display:grid;justify-items:start;gap:1px}.run-title{color:#758983}.run-summary strong{font:700 27px/1.2 ui-monospace,Consolas,monospace;letter-spacing:.04em;margin:4px 0;color:#244841}.run-desc{font-size:11px;color:#839490}.new-run{border:0;background:none;padding:10px 0 2px;color:#16786c;font-size:12px;font-weight:720;text-align:left}.new-run:hover{text-decoration:underline}.new-run span{font-size:18px;vertical-align:-1px;margin-right:4px}.workspace{display:grid;grid-template-columns:minmax(0,1.33fr) minmax(380px,.85fr);gap:20px;align-items:stretch}.card-dark{background:var(--dark);border-radius:12px;overflow:hidden;min-width:0;box-shadow:0 16px 26px rgba(24,44,50,.13)}.instrument-head{height:79px;border-bottom:1px solid #2b4248;display:flex;justify-content:space-between;align-items:center;padding:17px 25px;gap:10px}.section-index{color:#6f9d99}.section-index.ink{color:#5b8881}.instrument-head h2{font-size:20px;font-weight:730;letter-spacing:-.035em;color:#ebf5f2;margin:2px 0 0}.model-caption{color:#628b89;font-size:9px;margin-left:5px}.operating-mode{font:680 10px/1.5 ui-monospace,Consolas,monospace;letter-spacing:.09em;color:#a7c8c1;background:#1e353a;padding:8px 10px;border:1px solid #315256;white-space:nowrap}.mode-pill{color:#38d5ad;padding-left:6px}.machine-stage{position:relative;overflow:hidden;min-height:468px;background:radial-gradient(ellipse at 53% 58%,#243943 0%,#15272d 62%,#122126 100%)}.machine-stage::before{content:"";position:absolute;inset:0;opacity:.15;background-image:linear-gradient(#8db5b01c 1px,transparent 1px),linear-gradient(90deg,#8db5b01c 1px,transparent 1px);background-size:34px 34px;pointer-events:none}.machine-stage::after{content:"";position:absolute;inset:16px;border:1px solid rgba(119,172,165,.12);pointer-events:none}.machine-overlay{position:absolute;z-index:2;left:25px;right:25px;top:25px;display:flex;justify-content:space-between;gap:10px}.machine-overlay-title{color:#6e9291;font-size:9px}.live-tag{color:#a7d1c7;font-size:9px;display:flex;gap:7px;align-items:center}.live-dot{background:#49d6ac;border-radius:50%;width:5px;height:5px;box-shadow:0 0 0 3px rgba(73,214,172,.12)}.machine-svg{width:100%;height:auto;display:block;margin:14px auto -6px;position:relative;max-height:485px}.m-micro{font:740 10px ui-monospace,Consolas,monospace;letter-spacing:1.2px;fill:#8caeaf}.m-big{font:680 42px ui-monospace,Consolas,monospace;fill:#72e2bf;letter-spacing:-2px}.m-unit{font:600 15px ui-monospace,Consolas,monospace;fill:#b2cdc2}.m-small{font:650 11px ui-monospace,Consolas,monospace;fill:#a9d3c8}.m-read{font:750 13px ui-monospace,Consolas,monospace;fill:#6dd8b5}.m-muted{font:730 10px ui-monospace,Consolas,monospace;letter-spacing:.4px;fill:#86a5a7}.m-button{font:730 10px ui-monospace,Consolas,monospace;fill:#a7c5bf}.machine-hotspot{cursor:pointer;outline:none}.machine-hotspot:focus-visible{filter:drop-shadow(0 0 8px #61e4c3)}.gas-pipe{fill:none;stroke:url(#steel);stroke-width:8;stroke-linejoin:round;stroke-linecap:round}.machine-stage[data-action="dosing"] #flowPath,.machine-stage[data-action="helium"] #flowPath{opacity:.84;animation:gasmove .55s linear infinite}.machine-stage[data-action="degas"] .pump-blades,.machine-stage[data-action="leak"] .pump-blades{transform-origin:140px 385px;animation:rotate .75s linear infinite}@keyframes gasmove{from{stroke-dashoffset:0}to{stroke-dashoffset:-32}}@keyframes rotate{to{transform:rotate(360deg)}}.machine-bottom-note{display:flex;justify-content:space-between;padding:0 26px 18px;color:#638b8e;font-size:10px;gap:8px}.machine-bottom-note>span:first-child{font:700 9px ui-monospace,Consolas,monospace;letter-spacing:.07em;color:#84b6a9}.tiny-dot{display:inline-block;width:5px;height:5px;background:#3bcfae;vertical-align:middle;margin-right:5px}.telemetry{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border-top:1px solid #2c4348;background:#122329}.metric{padding:19px 16px 20px;border-right:1px solid #284148;min-width:0}.metric:last-child{border-right:0}.metric-label{color:#6e9c99;font-size:9px;white-space:nowrap;letter-spacing:.08em}.metric>div{display:flex;align-items:baseline;gap:5px;margin:7px 0 5px;min-width:0;white-space:nowrap}.metric strong{font:700 clamp(17px,1.8vw,25px)/1.1 ui-monospace,Consolas,monospace;letter-spacing:-.05em;color:#e7f6f1;min-width:0}.metric small{font:620 11px ui-monospace,Consolas,monospace;color:#6fa8a4}.metric-sub{font-size:10px;color:#6f918c}.card-light{background:var(--paper);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);min-width:0}.control-panel{min-height:675px;display:flex;flex-direction:column;overflow:hidden}.panel-title{display:flex;justify-content:space-between;gap:9px;align-items:center;padding:21px 25px 19px}.panel-title h2,.results-heading h2,.table-top h2,.log-head h2{font-size:21px;line-height:1.25;margin:5px 0 0;font-weight:760}.instruction-badge{padding:7px 9px;color:#54837b;background:#eff5f1;border:1px solid #d8e8df;font-size:9px;white-space:nowrap}.step-rail{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));background:#eef3f0;border-bottom:1px solid var(--line);border-top:1px solid var(--line)}.rail-cell{padding:12px 3px 11px;text-align:center;border-right:1px solid #dce6e0;color:#91a29d;position:relative}.rail-cell:last-child{border:0}.rail-cell b{font:760 12px ui-monospace,Consolas,monospace;display:block}.rail-cell span{display:block;font-size:10px;margin-top:4px;font-weight:750}.rail-cell.active{background:#e0f1eb;color:#166d60}.rail-cell.active::after{content:"";position:absolute;bottom:0;left:0;right:0;height:3px;background:#22877a}.rail-cell.done{background:#f5fbf8;color:#3f8b78}.rail-cell.done b::after{content:"✓";margin-left:3px;color:#259878;font-family:system-ui}.console-scroll{flex:1;padding:25px;display:flex;flex-direction:column}.stage-label{display:flex;justify-content:space-between;gap:10px;color:#5d948b;font-size:9px}.stage-label #stageIndicator{color:#91a7a0}.console-scroll h3{font-size:24px;letter-spacing:-.06em;margin:12px 0 7px;font-weight:780}.stage-desc{font-size:13px;line-height:1.8;color:#748783;margin-bottom:21px;min-height:45px}.tip{border-top:1px dashed #d5e1db;margin-top:auto;display:flex;align-items:flex-start;gap:10px;padding-top:18px;color:#758b81;font-size:11px;line-height:1.6}.tip-icon{width:17px;height:17px;border:1px solid #aac8bb;border-radius:50%;color:#648f84;font:750 11px/15px ui-monospace,Consolas,monospace;text-align:center;flex-shrink:0}.console-bottom{min-height:56px;border-top:1px solid var(--line);padding:0 25px;display:flex;align-items:center;justify-content:space-between}.console-bottom-mark{font-size:9px;color:#879b93}.small-rect{display:inline-block;background:#44ac96;width:9px;height:9px;margin-right:5px}.subtle-btn{border:0;background:transparent;color:#47776c;font-size:12px;font-weight:700}.subtle-btn:hover{text-decoration:underline}.control-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:17px}.input-field{display:block;min-width:0}.input-field>span{display:block;color:#587168;font-size:11px;font-weight:740;margin-bottom:6px}.field-wrap{display:flex;align-items:stretch;border:1px solid #cfded6;border-radius:6px;overflow:hidden;background:#fff}.field-wrap input,.field-wrap select{width:100%;min-width:0;border:0;outline:none;padding:10px 11px;height:43px;color:#253d3b;background:transparent;font:700 14px ui-monospace,Consolas,monospace}.field-wrap input:focus{box-shadow:inset 0 0 0 2px #8acbb9}.field-wrap small{display:flex;align-items:center;padding:0 9px;color:#7f908b;background:#f4f7f4;border-left:1px solid #dfebe3;white-space:nowrap;font-size:10px}.field-note{margin:4px 0 0;color:#98a7a1;font-size:10px}.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:45px;border-radius:6px;padding:10px 15px;border:1px solid transparent;font-size:13px;font-weight:760;letter-spacing:-.01em}.btn.primary{background:#1b796d;color:#fff}.btn.primary:hover:not(:disabled){background:#126e62}.btn.dark{background:#1a3035;color:#f7fbf9}.btn.dark:hover:not(:disabled){background:#0e2328}.btn.outline{background:#fff;color:#36766c;border:1px solid #bad3c8}.btn.outline:hover:not(:disabled){background:#f0f8f4}.btn.warning{background:#fff9f2;border:1px solid #dfba88;color:#976830}.btn.warning:hover:not(:disabled){background:#fff2e3}.action-row{display:flex;gap:8px;flex-wrap:wrap}.action-row .btn{flex:1}.action-row .btn.fitted{flex:0 1 auto}.status-card{border:1px solid #dce8e0;border-radius:8px;background:#f7faf8;padding:14px 15px;display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}.status-card small{display:block;color:#7c958d;font-size:10px;font-weight:730;margin-bottom:4px}.status-card strong{font-size:18px;letter-spacing:-.02em;font-variant-numeric:tabular-nums}.status-card .micro{font-size:11px;color:#7d918d}.status-card .icon{font-size:22px;line-height:1;color:#65a393}.signal{display:flex;align-items:center;gap:7px;color:#4b8075;font-size:11px;font-weight:720}.signal::before{content:"";width:8px;height:8px;background:#58bba1;border-radius:50%}.signal.muted{color:#7e908b}.signal.muted::before{background:#a7b5ac}.signal.warn{color:#b07443}.signal.warn::before{background:#d8a467}.hint-callout{padding:12px 13px;border-left:3px solid #9fbeae;background:#f2f7f4;color:#57716b;font-size:11px;line-height:1.65;margin-bottom:15px}.readout-card{border:1px solid #b7d2c9;background:#f0f8f5;padding:13px 15px;border-radius:6px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:10px}.readout-card .readout-label{color:#547a70;font:740 10px ui-monospace,Consolas,monospace;letter-spacing:.09em}.readout-card strong{font:740 25px ui-monospace,Consolas,monospace;color:#1d6258;letter-spacing:-.04em}.readout-card small{font-size:11px;color:#62867c}.micro-info{margin-top:11px;color:#80918c;font-size:11px;line-height:1.65}.checkboxline{display:flex;align-items:center;gap:10px;border:1px solid #d7e3dd;border-radius:7px;padding:12px;margin-bottom:11px;cursor:pointer;color:#37594f;font-size:12px;font-weight:700}.checkboxline input{accent-color:#1f8778;width:16px;height:16px}.small-status-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:15px}.small-status-grid>div{padding:12px;background:#f6f8f6;border:1px solid #e0eae3;border-radius:6px}.small-status-grid span{display:block;font-size:10px;color:#738a7d}.small-status-grid strong{display:block;font-size:14px;margin-top:3px;font-variant-numeric:tabular-nums}.progresswrap{margin:12px 0 15px}.progressinfo{display:flex;justify-content:space-between;font-size:11px;color:#647f74;gap:10px;margin-bottom:7px}.progressinfo strong{color:#21675d}.progressbar{height:7px;border-radius:99px;background:#e3ece8;overflow:hidden}.progressbar span{display:block;width:0;height:100%;background:linear-gradient(90deg,#2b9584,#68d9b5);transition:width .18s}.outline-btn{background:#fff;color:#2c7169;border:1px solid #bad2c8;border-radius:6px;padding:11px 13px;font-size:12px;font-weight:740;white-space:nowrap}.outline-btn:hover:not(:disabled){background:#f1f7f4}.report-success{padding:15px 16px;background:#eef8f3;border:1px solid #bbdbce;border-radius:8px;color:#256657;margin-bottom:17px}.report-success strong{display:block;font-size:14px;margin-bottom:4px}.report-success p{margin:0;color:#5c8176;font-size:12px}.results-block{margin-top:37px}.results-heading{display:flex;align-items:end;justify-content:space-between;gap:15px;margin-bottom:17px}.results-heading h2{font-size:26px;margin-top:5px}.results-expl{font-size:12px;color:#859691;padding-bottom:3px}.charts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}.plot-panel{border:1px solid #d6e2de;background:#fff;border-radius:12px;overflow:hidden;min-width:0;box-shadow:var(--shadow)}.plot-header{display:flex;align-items:center;justify-content:space-between;padding:19px 23px 3px;gap:8px}.plot-kicker{font-size:9px;color:#72968d}.plot-header h3{font-size:19px;margin:6px 0 0;line-height:1.3}.plot-header h3 span{font-size:11px;letter-spacing:0;color:#8ba09b;font-weight:500;margin-left:6px}.plot-pill{border:1px solid #e0eae4;background:#f3f8f5;color:#608477;padding:6px 8px;font-size:9px;white-space:nowrap}.plot-panel svg{display:block;width:100%;height:auto;padding:2px 10px 0;overflow:visible}.plot-footer{border-top:1px solid #edf1ee;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 22px;font-size:11px;color:#7c8e87}.plot-footer>span{white-space:nowrap}.legend-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}.teal{background:#249685}.mint{background:#55ad88}.data-and-log{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(290px,.65fr);gap:20px;margin-top:21px}.table-top,.log-head{padding:22px 24px 17px;display:flex;justify-content:space-between;align-items:center;gap:10px}.table-top h2,.log-head h2{font-size:20px}.table-actions{display:flex;gap:8px}.table-wrap{max-height:335px;overflow:auto;border-top:1px solid #e5eeea;border-bottom:1px solid #e5eeea}table{border-collapse:collapse;width:100%;font-size:11px;min-width:700px}td,th{padding:11px 11px;border-bottom:1px solid #eef3ee;text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}th{position:sticky;top:0;background:#f6f9f7;z-index:2;color:#54756c;font-weight:750}td{color:#445e56}td:first-child,th:first-child{text-align:center;padding-left:19px}td:last-child,th:last-child{text-align:left;padding-right:17px}.empty-table{text-align:center!important;padding:58px 10px;color:#94a49a;font-size:12px}.table-note{margin:0;padding:13px 20px 18px;color:#8c9c94;font-size:11px;line-height:1.55}.log-head{border-bottom:1px solid #e5eeea}.log-count{color:#85a197}.log-list{max-height:403px;overflow:auto;padding:13px 20px}.log-row{display:grid;grid-template-columns:64px 1fr;gap:12px;padding:10px 0;border-bottom:1px solid #edf2ee}.log-row:last-child{border:none}.log-time{font:650 10px ui-monospace,Consolas,monospace;color:#8ea299;padding-top:2px}.log-text{color:#49645b;font-size:11px;line-height:1.65}.log-text.warn{color:#9e6841}.log-text.good{color:#1b8065}.assignment{margin-top:35px;padding:30px 36px;background:#143932;color:#f0faf6;border-radius:12px;display:grid;grid-template-columns:.95fr 1.05fr;gap:32px;align-items:center}.assignment .section-index{color:#77bdae}.assignment h2{font-size:clamp(23px,2.4vw,34px);line-height:1.34;margin:8px 0 0}.assignment h2 em{color:#a3dfcb;font-style:normal}.assignment-copy p{color:#c3dad1;font-size:13px;line-height:1.85;margin-bottom:17px}.assignment-items{display:flex;flex-wrap:wrap;gap:8px}.assignment-items span{border:1px solid #487469;border-radius:3px;padding:7px 9px;font-size:10px;color:#b3d7c8}footer{padding:27px 1px 50px;color:#889892;font-size:11px;line-height:1.7}footer p{max-width:1080px;margin:0 0 6px}footer strong{color:#60837a}.toast{position:fixed;z-index:100;bottom:22px;left:50%;transform:translate(-50%,30px);padding:12px 18px;border:1px solid #426d65;color:#e6f7f1;background:#1a3637;box-shadow:0 20px 40px #10251f33;border-radius:6px;font-size:12px;max-width:min(92vw,540px);pointer-events:none;opacity:0;transition:opacity .2s,transform .2s}.toast.show{opacity:1;transform:translate(-50%,0)}.toast.error{background:#663832;border-color:#b06e60}.svg-tick{fill:#708b82;font:11px ui-monospace,Consolas,monospace}.svg-title{fill:#56746b;font:600 12px -apple-system,BlinkMacSystemFont,'Malgun Gothic',sans-serif}.svg-grid{stroke:#e9efeb;stroke-width:1}.svg-axis{stroke:#9fb6ad;stroke-width:1.35}.svg-line{fill:none;stroke:#158d7a;stroke-width:2.8;stroke-linecap:round;stroke-linejoin:round}.svg-dot{fill:#198e78;stroke:#fff;stroke-width:1.8}.svg-error{stroke:#78b9a1;stroke-width:1.5;stroke-linecap:round}.svg-guide{stroke:#afcbc0;stroke-dasharray:3 5;stroke-width:1.5}.svg-annotation{fill:#9cafaa;font:12px -apple-system,BlinkMacSystemFont,'Malgun Gothic',sans-serif}
+@media(max-width:1220px){.workspace{grid-template-columns:minmax(0,1.1fr) minmax(350px,.9fr)}.top-inner,main{padding-left:22px;padding-right:22px}.instrument-head{padding:17px}.metric{padding:16px 10px}.metric-label{font-size:8px}.metric strong{font-size:18px}.machine-stage{min-height:auto}.console-scroll{padding:20px}.panel-title{padding:19px 20px}.table-actions{flex-wrap:wrap;justify-content:end}}
+@media(max-width:1000px){.workspace{grid-template-columns:1fr}.control-panel{min-height:540px}.machine-svg{max-height:530px}.metric{padding:17px 15px}.metric strong{font-size:23px}.console-scroll{min-height:350px}.data-and-log{grid-template-columns:1fr}.log-list{max-height:230px}.charts{gap:13px}}
+@media(max-width:650px){.top-inner,main{padding-left:15px;padding-right:15px}.top-inner{min-height:64px}.top-label,.top-version{display:none}.brand-words{font-size:12px}.brand-mark{width:32px;height:32px}.system-led{font-size:9px}.masthead{padding:25px 0 21px;display:block}.masthead h1{font-size:34px}.lead{font-size:12px}.run-summary{margin-top:20px;border-left:0;border-top:1px solid #d5dfd9;padding:12px 0 0;display:grid;grid-template-columns:1fr auto;align-items:center}.run-title{grid-column:1}.run-summary strong{font-size:20px}.run-desc{grid-row:3;grid-column:1}.new-run{grid-column:2;grid-row:2 / span 2;white-space:nowrap}.workspace{gap:12px}.instrument-head{height:auto;min-height:65px;padding:14px}.instrument-head h2{font-size:16px}.model-caption{display:none}.operating-mode{font-size:8px;padding:6px}.machine-stage::after{inset:7px}.machine-overlay{left:14px;right:14px;top:12px}.machine-overlay-title{font-size:7px}.live-tag{font-size:7px}.machine-svg{margin:13px auto 0}.machine-bottom-note{padding:1px 13px 12px;font-size:8px}.machine-bottom-note>span:first-child{font-size:8px}.telemetry{grid-template-columns:repeat(3,1fr)}.metric{padding:12px 10px;border-bottom:1px solid #284148}.metric:nth-child(3){border-right:0}.metric:nth-child(4),.metric:nth-child(5){border-bottom:0}.metric-label{font-size:8px;letter-spacing:.01em}.metric strong{font-size:18px}.metric-sub{font-size:9px}.metric small{font-size:10px}.control-panel{min-height:510px}.panel-title{padding:16px}.panel-title h2{font-size:18px}.instruction-badge{font-size:8px}.rail-cell{padding:10px 2px 9px}.rail-cell b{font-size:11px}.rail-cell span{font-size:9px}.console-scroll{padding:18px;min-height:340px}.console-scroll h3{font-size:21px}.stage-desc{font-size:12px;margin-bottom:14px}.control-grid{gap:8px}.field-wrap input,.field-wrap select{font-size:13px;padding:8px;height:40px}.field-wrap small{font-size:9px;padding:0 6px}.btn{font-size:12px;padding:8px 9px}.console-bottom{padding:0 15px}.results-block{margin-top:28px}.results-heading{display:block;margin-bottom:12px}.results-heading h2{font-size:22px}.results-expl{font-size:11px;margin-top:5px;display:block}.charts{grid-template-columns:1fr;gap:12px}.plot-header{padding:14px 15px 0}.plot-header h3{font-size:17px}.plot-header h3 span{font-size:10px}.plot-footer{padding:10px 13px;font-size:10px}.data-and-log{gap:12px;margin-top:12px}.table-top,.log-head{padding:16px;align-items:flex-start;flex-wrap:wrap}.table-top h2,.log-head h2{font-size:18px}.table-actions{width:100%;justify-content:start}.outline-btn{padding:9px 11px;font-size:11px}.assignment{margin-top:23px;padding:22px 20px;grid-template-columns:1fr;gap:15px}.assignment h2{font-size:25px}.assignment-copy p{font-size:12px}footer{font-size:10px;padding-bottom:35px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}
+
+/* The instrument bay grows to match the control console without leaving empty space below telemetry. */
+.instrument{display:flex;flex-direction:column}.machine-stage{flex:1}
+
+/* Verified release: keyboard focus on SVG instrument controls. */
+.machine-hotspot:focus-visible{outline:3px solid #6ce5c1;outline-offset:3px}
+
+</style>
+</head>
+<body>
+<main id="top">
+<section class="masthead">
+  <div class="mast-left"><p class="eyebrow"><span class="line-dash"></span> PHYSICAL CHEMISTRY / INSTRUMENT SIMULATION</p><h1>Adsorption <em>Virtual Lab.</em></h1><p class="lead">실제 정적 용량식 흡착 분석기의 측정 절차를 경험하고, <strong>미지의 시료</strong>에서 얻은 데이터로 흡착 메커니즘을 해석하세요.</p></div>
+  <div class="run-summary"><span class="run-title">CURRENT RUN</span><strong id="runID">—</strong><span class="run-desc">접속 시 자동 생성되는 미지 시료</span><button class="new-run" id="newRun" type="button"><span aria-hidden="true">↻</span> 새 미지 시료</button></div>
+</section>
+<div class="workspace">
+  <section class="instrument card-dark" aria-label="가상 흡착 분석기">
+    <div class="instrument-head"><div><span class="section-index">01 / INSTRUMENT BAY</span><h2>Gas sorption analyzer <span class="model-caption">STATIC VOLUMETRIC</span></h2></div><div class="operating-mode" id="machineMode">STANDBY <span class="mode-pill">●</span></div></div>
+    <div class="machine-stage" id="machineStage" data-action="idle">
+      <div class="machine-overlay"><span class="machine-overlay-title">LABORATORY / INSTRUMENT 01</span><span class="live-tag"><span class="live-dot"></span> INTERACTIVE SIMULATOR</span></div>
+      <svg class="machine-svg" id="machineSvg" viewBox="0 0 940 540" role="img" aria-label="진공 펌프, 가스 매니폴드, 시료 셀, 온도조절 배스와 압력 계기가 표시된 가스 흡착 분석기">
+        <defs>
+          <linearGradient id="housing" x1="0" x2="1"><stop stop-color="#657984"/><stop offset=".18" stop-color="#c3d0d2"/><stop offset=".36" stop-color="#788c94"/><stop offset=".85" stop-color="#4a616e"/><stop offset="1" stop-color="#253946"/></linearGradient>
+          <linearGradient id="front" x1="0" x2="1"><stop stop-color="#34434b"/><stop offset=".55" stop-color="#202e36"/><stop offset="1" stop-color="#445861"/></linearGradient>
+          <linearGradient id="steel" x1="0" x2="1"><stop stop-color="#586e78"/><stop offset=".32" stop-color="#e6edeb"/><stop offset=".53" stop-color="#a0b4bd"/><stop offset=".75" stop-color="#e6ece9"/><stop offset="1" stop-color="#667b83"/></linearGradient>
+          <linearGradient id="glass" x1="0" x2="1"><stop stop-color="#a4d7df" stop-opacity=".12"/><stop offset=".26" stop-color="#e0f8f9" stop-opacity=".75"/><stop offset=".7" stop-color="#7cb6c1" stop-opacity=".34"/><stop offset="1" stop-color="#d6fbff" stop-opacity=".45"/></linearGradient>
+          <linearGradient id="bath" x1="0" x2="1"><stop stop-color="#0c627a"/><stop offset=".45" stop-color="#0aa1bb"/><stop offset="1" stop-color="#073e57"/></linearGradient>
+          <linearGradient id="bathWarm" x1="0" x2="1"><stop stop-color="#9a643c"/><stop offset=".5" stop-color="#d99648"/><stop offset="1" stop-color="#77492b"/></linearGradient>
+          <radialGradient id="screenGlow"><stop stop-color="#27494b"/><stop offset="1" stop-color="#081a20"/></radialGradient>
+          <filter id="ds"><feGaussianBlur stdDeviation="13"/></filter>
+        </defs>
+        <ellipse cx="458" cy="465" rx="409" ry="25" fill="#000" opacity=".23" filter="url(#ds)"/>
+        <path d="M 88 127 L 577 127 L 600 142 L 600 436 L 575 453 L 88 453 L 68 436 L 68 145 Z" fill="url(#housing)" stroke="#8da4a9" stroke-width="2"/>
+        <rect x="88" y="150" width="486" height="272" rx="12" fill="url(#front)" stroke="#82979a" stroke-width="1.5"/>
+        <path d="M 88 158 H 574" stroke="#c1d0ce" stroke-opacity=".38" stroke-width="2"/>
+        <rect x="108" y="171" width="312" height="151" rx="9" fill="#061a20" stroke="#708a8f" stroke-width="2"/>
+        <rect x="117" y="180" width="294" height="132" rx="5" fill="url(#screenGlow)"/>
+        <text x="136" y="207" class="m-micro">CHAMBER PRESSURE</text>
+        <text x="138" y="254" class="m-big" id="svgPressure">101.325</text><text x="359" y="254" class="m-unit">kPa</text>
+        <path d="M137 270 H391" stroke="#428581" stroke-opacity=".55"/>
+        <text x="137" y="294" class="m-small">T</text><text x="156" y="294" class="m-read" id="svgTemp">298.2 K</text>
+        <text x="268" y="294" class="m-small">VALVE</text><text x="329" y="294" class="m-read" id="svgValve">CLOSED</text>
+        <text x="133" y="348" class="m-muted">VACUUM / MANIFOLD MODULE</text>
+        <g id="pumpSymbol" role="button" tabindex="0" aria-label="진공 펌프 제어" class="machine-hotspot"><title>진공 펌프 · 현재 단계 시작</title><rect x="120" y="365" width="95" height="39" rx="6" fill="#0a1821" stroke="#61777b"/><circle cx="140" cy="385" r="11" fill="#26434d" stroke="#90a6ab"/><path class="pump-blades" d="M140 375 L143 383 L151 385 L142 388 L140 396 L137 387 L129 385 L138 382Z" fill="#75d4c3"/><text x="156" y="389" class="m-button">PUMP</text></g>
+        <rect x="238" y="365" width="95" height="39" rx="6" fill="#0a1821" stroke="#61777b"/><circle cx="256" cy="385" r="4" id="valveLed" fill="#4d6771"/><text x="270" y="389" class="m-button">DOSE VALVE</text><rect id="doseHotspot" role="button" tabindex="0" aria-label="흡착 분석 시작" x="238" y="365" width="95" height="39" rx="6" fill="transparent" class="machine-hotspot"><title>흡착 프로그램 시작</title></rect>
+        <rect x="353" y="365" width="195" height="39" rx="6" fill="#0a1821" stroke="#61777b"/><circle cx="370" cy="385" r="4" id="heLed" fill="#4d6771"/><text x="386" y="389" class="m-button">He / FREE SPACE</text><rect id="heHotspot" role="button" tabindex="0" aria-label="헬륨 자유공간 측정" x="353" y="365" width="195" height="39" rx="6" fill="transparent" class="machine-hotspot"><title>He 자유공간 측정</title></rect>
+        <rect x="450" y="172" width="94" height="48" rx="7" fill="#14232c" stroke="#657983"/><text x="462" y="192" class="m-micro">INSTRUMENT</text><text x="462" y="210" class="m-small" id="svgStatus">READY</text>
+        <circle cx="467" cy="247" r="15" fill="#081b22" stroke="#bdc9c8" stroke-width="3"/><circle id="hardwareLed" cx="467" cy="247" r="8" fill="#64767a"/>
+        <text x="495" y="252" class="m-small">STATUS</text>
+        <circle cx="467" cy="295" r="15" fill="#0c1f28" stroke="#a0b8bb" stroke-width="3"/><path d="M462 290 L472 300 M472 290 L462 300" stroke="#72a9a9" stroke-width="3" stroke-linecap="round"/>
+        <text x="495" y="300" class="m-small">VAC</text>
+        <rect x="133" y="124" width="150" height="25" rx="4" fill="#d4e1df"/><text x="149" y="141" fill="#27444b" font-size="12" font-weight="800" letter-spacing="1.3">ACE / SORPTION</text>
+        <path d="M147 452 V462 M503 452 V462" stroke="#293a42" stroke-width="13"/>
+        <!-- Gas rail -->
+        <path class="gas-pipe" d="M576 174 L650 174 L650 126 L785 126 L785 173"/><path class="gas-pipe" d="M650 174 V226 L755 226"/>
+        <path id="flowPath" d="M576 174 L650 174 L650 126 L785 126 L785 173" fill="none" stroke="#49d5b9" stroke-width="5" stroke-dasharray="7 9" opacity="0"/>
+        <!-- gas cylinder -->
+        <rect x="758" y="68" width="55" height="93" rx="14" fill="url(#steel)" stroke="#cad8d9"/><rect x="779" y="53" width="13" height="18" rx="3" fill="#849fa5"/><path d="M771 53 H801" stroke="#d5e5e5" stroke-width="7"/><rect x="760" y="110" width="51" height="27" fill="#183b46"/><text x="785" y="128" fill="#b8f5e6" font-size="14" font-weight="700" text-anchor="middle" id="svgGas">N₂</text><text x="787" y="41" class="m-micro" text-anchor="middle">ADSORBATE</text>
+        <circle cx="650" cy="174" r="12" fill="url(#steel)" stroke="#93b2b1" stroke-width="2"/><path id="valveHandle" d="M643 167 L657 181 M657 167 L643 181" stroke="#4c6b71" stroke-width="4" stroke-linecap="round"/>
+        <!-- sample cell mount + tube, clickable -->
+        <g id="tubeHotspot" tabindex="0" role="button" aria-label="시료 셀 장착 또는 분리" class="machine-hotspot"><title>시료 셀 장착</title>
+          <rect x="755" y="174" width="62" height="100" fill="transparent"/>
+          <path d="M765 169 H811 V194 H765 Z" fill="url(#steel)" stroke="#e8f4f5"/>
+          <path d="M774 194 V329 Q774 355 787 355 Q801 355 801 329 V194" fill="url(#glass)" stroke="#b9e4ea" stroke-width="2"/>
+          <path d="M777 223 V332 Q777 349 787 349 Q798 349 798 332 V223" fill="#b8e1e1" fill-opacity=".10"/>
+          <rect x="778" y="322" width="19" height="21" rx="5" fill="#9a846c" id="sampleFill"/>
+          <circle cx="784" cy="330" r="2" fill="#e0c4a0"/><circle cx="790" cy="337" r="2" fill="#a98b65"/><circle cx="791" cy="328" r="1.5" fill="#dfc7a1"/>
+          <rect id="tubeAbsent" x="770" y="198" width="36" height="151" rx="11" fill="#10242c" fill-opacity=".85"/>
+        </g>
+        <!-- water bath/dewar -->
+        <g id="bathHotspot" tabindex="0" role="button" aria-label="온도 조절 배스 장착" class="machine-hotspot"><title>온도 조절 배스 장착</title>
+          <rect x="715" y="289" width="143" height="142" rx="14" fill="url(#steel)" stroke="#e3eded" stroke-width="1.5"/>
+          <path d="M727 299 H846 V418 H727 Z" fill="url(#bath)" id="bathLiquid"/>
+          <path d="M721 307 H853" stroke="#e1eeee" stroke-width="5"/>
+          <rect x="726" y="334" width="120" height="40" rx="4" fill="#042c3e" fill-opacity=".72"/><text x="786" y="352" class="m-small" text-anchor="middle">ANALYSIS</text><text x="786" y="366" id="svgBath" class="m-read" text-anchor="middle">77.0 K</text>
+          <rect x="713" y="285" width="147" height="145" rx="13" id="bathCover" fill="#172a31" fill-opacity=".92"/>
+        </g>
+        <!-- manifold line front -->
+        <path d="M575 227 H704 L715 215 H765" stroke="#b5c7c7" stroke-width="6" fill="none" stroke-linecap="round"/>
+        <text x="705" y="470" class="m-muted" text-anchor="middle">SAMPLE CELL / THERMOSTAT</text>
+        <text x="92" y="477" class="m-muted">MODEL S-01 · EDUCATIONAL VOLUMETRIC SYSTEM</text>
+      </svg>
+      <div class="machine-bottom-note"><span><span class="tiny-dot"></span> INTERACTIVE HARDWARE</span><span>장치 부품을 클릭해 해당 단계의 동작을 시작할 수 있습니다</span></div>
+    </div>
+    <div class="telemetry" aria-label="실시간 계측값">
+      <div class="metric"><span class="metric-label">CELL PRESSURE</span><div><strong id="tPressure">101.325</strong><small>kPa</small></div><span class="metric-sub" id="pDetail">대기압</span></div>
+      <div class="metric"><span class="metric-label">ANALYSIS TEMP</span><div><strong id="tTemp">298.2</strong><small>K</small></div><span class="metric-sub" id="tempDetail">대기 온도</span></div>
+      <div class="metric"><span class="metric-label">VACUUM</span><div><strong id="tVacuum">OFF</strong></div><span class="metric-sub" id="vacDetail">펌프 대기</span></div>
+      <div class="metric"><span class="metric-label">SAMPLE MASS</span><div><strong id="tMass">—</strong><small>g</small></div><span class="metric-sub">전자저울 등록값</span></div>
+      <div class="metric"><span class="metric-label">DATA POINTS</span><div><strong id="tPoints">0</strong><small id="tPointsMax">/ —</small></div><span class="metric-sub" id="pointDetail">측정 대기</span></div>
+    </div>
+  </section>
+
+  <section class="control-panel card-light" aria-label="실험 절차 및 조작">
+    <div class="panel-title"><div><span class="section-index ink">02 / CONTROL CONSOLE</span><h2>측정 프로그램</h2></div><span class="instruction-badge">STEP BY STEP</span></div>
+    <div class="step-rail" id="stepRail" aria-label="실험 진행 단계">
+      <div class="rail-cell active"><b>01</b><span>칭량</span></div><div class="rail-cell"><b>02</b><span>탈기</span></div><div class="rail-cell"><b>03</b><span>장착</span></div><div class="rail-cell"><b>04</b><span>누설</span></div><div class="rail-cell"><b>05</b><span>체적</span></div><div class="rail-cell"><b>06</b><span>흡착</span></div>
+    </div>
+    <div class="console-scroll">
+      <div class="stage-label"><span id="stageNumber">PROCEDURE 01</span><span id="stageIndicator">PREPARATION REQUIRED</span></div>
+      <h3 id="stageTitle">시료 준비 및 칭량</h3>
+      <p class="stage-desc" id="stageDesc">시료 튜브를 영점 조정하고, 미지 고체 시료를 올린 뒤 질량을 등록하세요.</p>
+      <div id="stageContent" aria-live="polite"></div>
+      <div class="tip"><span class="tip-icon">i</span><span id="stageTip">시료 질량은 단위 질량당 흡착량 계산에 사용됩니다.</span></div>
+    </div>
+    <div class="console-bottom"><span class="console-bottom-mark"><span class="small-rect"></span> INSTRUMENT LOG</span><button class="subtle-btn" type="button" id="viewLog">기록 보기 <span aria-hidden="true">↗</span></button></div>
+  </section>
+</div>
+
+<section class="results-block">
+  <div class="results-heading"><div><span class="section-index ink">03 / LIVE ACQUISITION</span><h2>실시간 측정 데이터</h2></div><span class="results-expl">압력 응답과 흡착 등온선은 측정이 진행되면서 함께 갱신됩니다.</span></div>
+  <div class="charts">
+    <section class="plot-panel"><div class="plot-header"><div><span class="plot-kicker">CHANNEL 01 / TRANSDUCER</span><h3>압력 응답 <span>Pressure vs. time</span></h3></div><span class="plot-pill" id="traceState">대기</span></div><svg id="pressurePlot" viewBox="0 0 720 330" role="img" aria-label="측정 중 압력의 시간별 변화 그래프"></svg><div class="plot-footer"><span><span class="legend-dot teal"></span> 시료 셀 압력</span><span id="traceFoot">최근 시간 창 · 가상 시간</span></div></section>
+    <section class="plot-panel"><div class="plot-header"><div><span class="plot-kicker">CHANNEL 02 / EQUILIBRIUM</span><h3>흡착 등온선 <span>Adsorption isotherm</span></h3></div><span class="plot-pill" id="isoState">0 points</span></div><svg id="isothermPlot" viewBox="0 0 720 330" role="img" aria-label="압력에 따른 흡착량 측정 데이터와 오차막대"></svg><div class="plot-footer"><span><span class="legend-dot mint"></span> 측정값 ± 불확실성</span><span id="xAxisFoot">정규화 압력 x</span></div></section>
+  </div>
+</section>
+
+<section class="data-and-log">
+  <section class="data-panel card-light" id="dataSection"><div class="table-top"><div><span class="section-index ink">04 / RAW DATA</span><h2>측정 원자료</h2></div><div class="table-actions"><button class="outline-btn" type="button" id="downloadCSV" disabled>CSV 다운로드 ↓</button><button class="outline-btn" type="button" id="downloadLog">실험 기록 ↓</button></div></div>
+  <div class="table-wrap"><table><thead><tr><th>#</th><th>x = P / P<sub>ref</sub></th><th>P (kPa)</th><th>q (mmol/g)</th><th>u(q) (mmol/g)</th><th>평형시간 (s)</th><th>판정</th></tr></thead><tbody id="dataRows"><tr><td class="empty-table" colspan="7">측정을 완료하면 원자료가 이곳에 기록됩니다.</td></tr></tbody></table></div>
+  <p class="table-note">u(q)는 계측 오차 모델에서 추정한 표준 불확실성입니다. 측정값은 교육용 모의 데이터이며 실제 장비의 검교정 기록이나 실측치가 아닙니다.</p></section>
+  <aside class="log-panel card-light" id="logPanel"><div class="log-head"><div><span class="section-index ink">05 / EVENT LOG</span><h2>장비 이벤트</h2></div><span class="log-count" id="eventCount">0 EVENTS</span></div><div class="log-list" id="logList" aria-live="polite"></div></aside>
+</section>
+<section class="assignment"><div><span class="section-index">LAB REPORT / SCIENTIFIC INTERPRETATION</span><h2>관측된 결과로부터<br><em>흡착 메커니즘을 추론하세요.</em></h2></div><div class="assignment-copy"><p>등온선을 작성하고 여러 모형의 적합도와 잔차를 비교하십시오. 파라미터의 물리적 의미, 근거가 부족한 해석, 추가 실험이 필요한 부분을 명확히 기술하십시오.</p><div class="assignment-items"><span>01 · 등온선 특징</span><span>02 · 모형 비교</span><span>03 · 파라미터</span><span>04 · 물리적 해석</span></div></div></section>
+</main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+(()=>{'use strict';
+const $=(id)=>document.getElementById(id);
+const RG=8.314462618; // kPa mL mmol^-1 K^-1
+const RM=0.008314462618; // kJ mol^-1 K^-1
+const MANIFOLD_V=18.0,MANIFOLD_T=298.15;
+const TYPE_LIST=['langmuir','dissociative','bet','dr','heterogeneous'];
+const esc=(v)=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const clip=(v,a,b)=>Math.min(b,Math.max(a,v));
+function rand(){if(typeof crypto!=='undefined'&&crypto.getRandomValues){const a=new Uint32Array(1);crypto.getRandomValues(a);return a[0]/4294967296;}return Math.random()}
+function uniform(a,b){return a+(b-a)*rand()}
+function normal(){const u=Math.max(1e-12,rand()),v=rand();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)}
+function makeID(){return 'U-'+Array.from({length:6},()=>Math.floor(rand()*36).toString(36).toUpperCase()).join('')}
+function createSpec(){
+ const kind=TYPE_LIST[Math.floor(rand()*TYPE_LIST.length)];
+ const gas=kind==='dissociative'?'H₂':(kind==='langmuir'&&rand()<.48)||(kind==='heterogeneous'&&rand()<.22)?'H₂':'N₂';
+ const temp=gas==='N₂'?77:298.15,pref=gas==='N₂'?101.325:100;
+ const qmax=uniform(1.05,2.9), mass=uniform(.085,.205),voidV=uniform(3.8,5.2);
+ let p={};
+ if(kind==='langmuir')p={K:uniform(3.5,48)};
+ if(kind==='dissociative')p={K:uniform(4,85)};
+ if(kind==='bet')p={C:uniform(9,55),qm:uniform(.45,1.15)};
+ if(kind==='dr')p={E:uniform(2.8,6.2)};
+ if(kind==='heterogeneous'){let fs=uniform(.58,.77),fk=uniform(.07,.15);p={K:uniform(1.3,7.4),frac:[fs,1-fs-fk,fk],dE1:uniform(.55,1.35),dE2:uniform(1.35,2.35)}}
+ return {kind,gas,temp,pref,qmax,mass,voidV,p,id:makeID(),baseTau:uniform(9,17)};
+}
+function eqBase(s,x){
+ x=clip(x,1e-9,.962);
+ const {kind,p,qmax,temp}=s;
+ if(kind==='langmuir')return qmax*p.K*x/(1+p.K*x);
+ if(kind==='dissociative'){const z=Math.sqrt(p.K*x);return qmax*z/(1+z)}
+ if(kind==='bet')return p.qm*p.C*x/((1-x)*(1+(p.C-1)*x));
+ if(kind==='dr'){const A=RM*temp*Math.log(1/x);return qmax*Math.exp(-((A/p.E)**2))}
+ if(kind==='heterogeneous'){
+  const ks=[p.K,p.K*Math.exp(p.dE1/(RM*temp)),p.K*Math.exp(p.dE2/(RM*temp))];
+  return qmax*ks.reduce((acc,k,i)=>acc+p.frac[i]*(k*x/(1+k*x)),0);
+ }
+ return 0;
+}
+function maxQ(s){return s.kind==='bet'?s.p.qm*5:s.qmax}
+function niceStep(raw){const exp=Math.floor(Math.log10(Math.max(1e-11,raw))),scale=10**exp,frac=raw/scale;return(frac<=1?1:frac<=2?2:frac<=2.5?2.5:frac<=5?5:10)*scale}
+function axisFor(max,target=5){const step=niceStep(Math.max(max,1e-10)/target),top=Math.ceil(max/step)*step||step*target;return {max:top,step,count:Math.round(top/step)}}
+function tickLabel(v,step){if(Math.abs(v)<1e-10)return '0';const abs=Math.abs(step);const n=abs>=1?0:Math.min(4,Math.max(0,Math.ceil(-Math.log10(abs))));return Number(v.toFixed(n)).toLocaleString('en-US',{maximumFractionDigits:n})}
+function chooseTargets(s,count){
+ const n=Math.max(12,Math.min(48,count));const hi=s.gas==='N₂'?.88:.94,lo=s.gas==='N₂'?.005:.012;const early=Math.max(4,Math.round(n*.39));const xs=[];
+ for(let i=0;i<early;i++)xs.push(lo*Math.pow(.115/lo,i/(early-1)));
+ for(let i=1;i<=n-early;i++)xs.push(.115+(hi-.115)*i/(n-early));
+ return xs;
+}
+let spec,state,busyTimer=null,analysisTimer=null,toastTimer=null;
+const stageNames=['시료 준비 및 칭량','시료 탈기 · 전처리','시료 셀 및 배스 장착','진공·누설 검사','He 자유공간 교정','자동 흡착 측정'];
+function newState(){
+ spec=createSpec();
+ return {step:0,tare:false,powder:false,enteredMass:null,tube:false,sealed:false,bath:false,degassed:false,quality:1,
+ stageBusy:null,pressure:101.325,temp:298.15,pump:false,gasValve:false,heValve:false,voidMeas:null,heBefore:null,heAfter:null,
+ mass:spec.mass,log:[],elapsed:0,sessionElapsed:0,trace:[],samples:[],targets:[],pointIndex:0,pointElapsed:0,pointStatus:'',phase:'idle',
+ running:false,paused:false,done:false,aborted:false,speed:12,requestedCount:25,eqTolerance:.7,maxWait:140,
+ q:0,nTotal:0,doseDelta:0,doseTime:0,stepP0:0,initialPressure:0,currentTarget:null,lastCheckP:0,lastCheckTime:0,
+ countdown:0,degTemp:160,degMinutes:45,seriesVersion:1,errors:0};
+}
+function log(message,level='info'){const t=Math.max(0,Math.round(state.sessionElapsed));state.log.unshift({t,level,message});if(state.log.length>250)state.log.length=250;renderLogs()}
+function toast(message,err=false){const el=$('toast');el.textContent=message;el.className='toast show'+(err?' error':'');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.className='toast',3200)}
+function enterStep(n){state.step=n;state.stageBusy=null;log(`${String(n+1).padStart(2,'0')}단계: ${stageNames[n]}`);renderStage();renderRail();updateMachine()}
+function showErr(t){state.errors++;toast(t,true);log(t,'warn')}
+function prepCard(label,val,sub=''){return `<div class="status-card"><div><small>${esc(label)}</small><strong>${val}</strong>${sub?`<div class="micro">${esc(sub)}</div>`:''}</div><span class="icon" aria-hidden="true">◎</span></div>`}
+function field(id,label,val,unit,min,max,step='any'){
+ return `<label class="input-field"><span>${label}</span><div class="field-wrap"><input type="number" id="${id}" min="${min}" max="${max}" step="${step}" value="${val}" ${state.stageBusy?'disabled':''}><small>${unit}</small></div></label>`;
+}
+function btn(label,act,variant='outline',disabled=false){return `<button type="button" class="btn ${variant}" data-act="${act}" ${disabled||!!state.stageBusy?'disabled':''}>${label}</button>`}
+function renderRail(){Array.from($('stepRail').children).forEach((e,i)=>{e.className='rail-cell'+(i<state.step?' done':i===state.step?' active':'')});}
+function renderStage(){
+ const s=state,n=s.step,busy=!!s.stageBusy;
+ $('stageNumber').textContent='PROCEDURE '+String(n+1).padStart(2,'0');
+ $('stageIndicator').textContent=busy?'PROCESS ACTIVE':s.done?'RUN COMPLETE':s.paused?'MEASUREMENT PAUSED':s.aborted?'RUN INTERRUPTED':s.running?'AUTOMATIC SEQUENCE':'OPERATOR ACTION';
+ $('stageTitle').textContent=stageNames[n];
+ let html='',desc='',tip='';
+ if(n===0){
+  desc='저울을 영점 조정하고 시료를 올립니다. 표시된 질량을 측정 프로그램에 등록해야 다음 단계로 진행합니다.';
+  const bal=s.powder?s.mass.toFixed(4)+' g':s.tare?'0.0000 g':'— — — — g';
+  html=prepCard('ELECTRONIC BALANCE / READOUT',bal,s.powder?'튜브 질량을 제외한 시료 순질량':'시료 튜브를 먼저 영점 조정하세요')+
+  `<div class="action-row" style="margin-bottom:15px">${btn('① 저울 영점 (TARE)','tare','outline',s.tare)}${btn('② 시료 올리기','place','dark',!s.tare||s.powder)}</div>`+
+  `<div class="control-grid" style="grid-template-columns:1fr auto;align-items:end"><label class="input-field"><span>측정된 시료 질량 입력</span><div class="field-wrap"><input id="massEntry" type="number" min="0.02" max="1.5" step="0.0001" placeholder="0.0000" value="${s.enteredMass===null?'':s.enteredMass}"><small>g</small></div></label>${btn('저울값 복사','copy-mass','outline',!s.powder)}</div>`+
+  `<div class="action-row">${btn('질량 등록 후 다음 단계 →','mass-confirm','primary',!s.powder)}</div>`;
+  tip='실험에서는 전처리 후 질량을 다시 확인하기도 합니다. 여기서는 순질량 측정 단계를 간소화했습니다.';
+ }else if(n===1){
+  desc='진공 상태에서 시료에 흡착된 수분·잔류 가스를 제거합니다. 온도와 시간은 전처리 프로그램에 기록됩니다.';
+  html=prepCard('VACUUM PREPARATION / DEGAS',busy?'EVACUATING…':s.degassed?'COMPLETED':'READY',`실험실 시간 가속 시뮬레이션`)+
+  `<div class="control-grid">${field('degasTemp','탈기 온도',s.degTemp,'°C',40,320,5)}${field('degasMinutes','탈기 시간',s.degMinutes,'min',10,180,5)}</div>`+
+  `<div class="progresswrap"><div class="progressinfo"><span id="busyMessage">${busy?'탈기 진행 중':'진공 펌프 · 히터 준비됨'}</span><strong id="busyPercent">${busy?'0%':'—'}</strong></div><div class="progressbar"><span id="busyBar"></span></div></div>`+
+  `<div class="action-row">${btn('VACUUM + DEGAS 시작','degas-start','primary',busy)}</div>`;
+  tip='시료 종류에 따라 실제 탈기 온도와 시간이 다릅니다. 본 가상 시료에는 교육용 표준 전처리 조건이 제공됩니다.';
+ }else if(n===2){
+  desc='전처리한 튜브를 분석 포트에 설치하고 씰(O-ring)과 온도 조절 배스를 확인합니다. 그림의 장치 부품도 클릭할 수 있습니다.';
+  html=`<div class="small-status-grid"><div><span>시료 튜브</span><strong>${s.tube?'● 장착 완료':'○ 미장착'}</strong></div><div><span>O-ring 연결</span><strong>${s.sealed?'● 밀폐':'○ 개방'}</strong></div><div><span>분석 배스</span><strong>${s.bath?'● 연결 완료':'○ 분리'}</strong></div><div><span>측정 프로그램</span><strong>${spec.gas} / ${spec.temp.toFixed(spec.temp===77?0:1)} K</strong></div></div>`+
+  `<div class="action-row" style="margin-bottom:9px">${btn(s.tube?'✓ 튜브 장착됨':'시료 튜브 장착','tube','outline',s.tube)}${btn(s.sealed?'✓ O-ring 체결':'O-ring 체결','seal','outline',s.sealed)}</div>`+
+  `<div class="action-row" style="margin-bottom:14px">${btn(s.bath?'✓ 분석 배스 연결':'온도 조절 배스 연결','bath','outline',s.bath)}</div>`+
+  `<div class="action-row">${btn('진공·누설 검사로 진행 →','mount-confirm','primary',!(s.tube&&s.bath))}</div>`;
+  tip='O-ring이 열려 있으면 누설 검사에서 실패합니다. 실제 장비에서도 시료 연결부 밀폐가 중요합니다.';
+ }else if(n===3){
+  desc='시료 셀을 배기하고 차단한 상태에서 압력 상승을 감시하여 연결부 누설 여부를 확인합니다.';
+  html=prepCard('LEAK CHECK / PRESSURE',s.stageBusy?'TESTING…':s.sealed?'SEAL CONNECTED':'SEAL OPEN',s.sealed?'검사 준비됨':'O-ring이 체결되지 않았습니다')+
+  `<div class="small-status-grid"><div><span>펌프 상태</span><strong>${s.pump?'ON':'OFF'}</strong></div><div><span>진공 압력</span><strong>${s.pressure.toFixed(3)} kPa</strong></div></div>`+
+  `<div class="progresswrap"><div class="progressinfo"><span id="busyMessage">${busy?'배기 및 누설 검사 중':'시험 버튼을 눌러 시작하세요'}</span><strong id="busyPercent">${busy?'0%':'—'}</strong></div><div class="progressbar"><span id="busyBar"></span></div></div>`+
+  `<div class="action-row" style="margin-bottom:9px">${btn('EVACUATE / LEAK TEST','leak-start','primary',busy)}${btn(s.sealed?'O-ring 체결됨':'O-ring 긴급 체결','seal','warning',busy||s.sealed)}</div>`;
+  tip='누설 검사에서 실패하면 O-ring 상태를 확인하고 재시험할 수 있습니다.';
+ }else if(n===4){
+  desc='비흡착성 기준 가스 He를 매니폴드에서 시료 셀로 팽창시켜 자유공간(Free space)을 산정합니다.';
+  const val=s.voidMeas===null?'NOT MEASURED':`${s.voidMeas.toFixed(3)} mL`;
+  html=prepCard('SAMPLE CELL FREE SPACE',busy?'CALIBRATING…':val,s.voidMeas===null?'He 팽창 후 계산':'분석 온도에서의 단순화된 체적')+
+  `<div class="small-status-grid"><div><span>매니폴드 체적</span><strong>${MANIFOLD_V.toFixed(1)} mL</strong></div><div><span>매니폴드 온도</span><strong>${MANIFOLD_T.toFixed(1)} K</strong></div><div><span>He 주입 압력</span><strong id="heP0">${s.heBefore?s.heBefore.toFixed(2):'—'} kPa</strong></div><div><span>팽창 후 압력</span><strong id="hePeq">${s.heAfter?s.heAfter.toFixed(2):'—'} kPa</strong></div></div>`+
+  `<div class="progresswrap"><div class="progressinfo"><span id="busyMessage">${busy?'He 주입·팽창 중':'준비됨'}</span><strong id="busyPercent">${busy?'0%':'—'}</strong></div><div class="progressbar"><span id="busyBar"></span></div></div>`+
+  `<div class="action-row">${btn('HE / FREE-SPACE 측정','he-start','primary',busy)}</div>`;
+  tip='실제 장비에서는 온도 구간과 기체 비이상성을 고려합니다. 여기서는 이상기체와 두 구역 온도를 적용합니다.';
+ }else if(n===5){
+  if(s.running||s.done||s.aborted){
+   desc=s.done?'측정이 완료되었습니다. 그래프와 원자료를 내려받아 흡착계의 성질을 분석하세요.':s.aborted?'측정이 중단되었습니다. 부분 데이터를 내려받거나 같은 시료로 다시 측정할 수 있습니다.':s.paused?'측정이 일시정지되었습니다. 계속 측정을 누르면 중단 지점에서 다시 시작합니다.':'자동 가스 주입과 평형 대기 프로그램이 진행 중입니다.';
+   const pct=s.targets.length?Math.round(s.samples.length/s.targets.length*100):0;
+   html=s.done?`<div class="report-success"><strong>✓ ACQUISITION COMPLETE</strong><p>${s.samples.length}개 압력점 취득 완료 · 원자료 저장 가능</p></div>`:
+   prepCard('CURRENT MEASUREMENT',s.running?`${s.samples.length} / ${s.targets.length} POINTS`:'INTERRUPTED',s.running?`제어 상태: ${s.phase==='dosing'?'GAS DOSING':s.phase==='equilibrating'?'EQUILIBRATING':'STANDBY'}`:'부분 측정 데이터를 다운로드할 수 있습니다')+
+   `<div class="progresswrap"><div class="progressinfo"><span id="scanMessage">${s.running?'압력별 데이터 취득 중':'중단됨'}</span><strong id="scanPercent">${pct}%</strong></div><div class="progressbar"><span id="scanBar" style="width:${pct}%"></span></div></div>`;
+   html+=`<div class="action-row" style="margin-bottom:9px">${s.running?btn(s.paused?'▶ 계속 측정':'Ⅱ 일시정지','pause','outline'):''}${s.running?btn('■ 측정 중단','abort','warning'):''}${s.done?btn('측정 CSV 내려받기 ↓','csv','primary'):btn('현재 데이터 CSV ↓','csv','outline',!s.samples.length)}</div>`;
+   html+=`<div class="action-row">${btn('동일 시료 재측정','retry','outline',s.running)}</div>`;
+  }else{
+   desc=`자동 ${spec.gas} 흡착 분석 · 분석 온도 ${spec.temp.toFixed(spec.temp===77?0:1)} K. 압력 범위와 평형 조건을 설정한 후 시작하세요.`;
+   html=`<div class="control-grid">${field('pointCount','측정 압력점',s.requestedCount,'points',12,48,1)}${field('eqTolerance','평형 판정 |dP/dt|',s.eqTolerance,'kPa/min',.1,10,.1)}${field('maxWait','점별 최대 대기',s.maxWait,'virtual s',30,300,10)}<label class="input-field"><span>실행 속도</span><div class="field-wrap"><select id="speedInput"><option value="1" ${s.speed===1?'selected':''}>×1 관찰</option><option value="4" ${s.speed===4?'selected':''}>×4</option><option value="12" ${s.speed===12?'selected':''}>×12 기본</option><option value="24" ${s.speed===24?'selected':''}>×24 빠름</option></select></div></label></div>`+
+   `<div class="hint-callout">정규화 압력 x = P/P<sub>ref</sub>을 따라 자동 주입하며, 평형 조건을 만족하면 해당 측정점을 기록합니다. 모형과 실제 파라미터는 비공개입니다.</div>`+
+   `<div class="action-row">${btn('▶ START ADSORPTION ANALYSIS','analysis-start','primary')}</div>`;
+  }
+  tip='실제 등온선 해석에서는 측정 조건, 잔차, 오차와 모형 식별 가능성을 모두 고려하세요.';
+ }
+ $('stageDesc').textContent=desc;$('stageContent').innerHTML=html;$('stageTip').textContent=tip;
+ renderRail();updateMachine();
+}
+function updateMachine(){
+ const s=state;
+ $('runID').textContent=spec.id;
+ $('tPressure').textContent=s.pressure.toFixed(s.pressure<1?3:2);
+ $('tTemp').textContent=s.temp.toFixed(1);
+ $('tVacuum').textContent=s.pump?'ON':'OFF';
+ $('tMass').textContent=s.enteredMass===null?'—':s.enteredMass.toFixed(4);
+ $('tPoints').textContent=String(s.samples.length);
+ $('tPointsMax').textContent='/ '+(s.targets.length||'—');
+ $('pointDetail').textContent=s.paused?'측정 일시정지':s.aborted?'측정 중단':s.phase==='dosing'?'가스 주입 중':s.phase==='equilibrating'?'평형 대기 중':s.done?'측정 완료':'측정 대기';
+ $('pDetail').textContent=s.stageBusy==='leak'?'누설 검사':s.stageBusy==='he'?'He 교정':s.phase==='dosing'?'주입 압력':s.phase==='equilibrating'?'흡착 평형화':s.pressure<.1?'고진공 상태':'시료 셀';
+ $('tempDetail').textContent=s.stageBusy==='degas'?'탈기 가열 중':s.bath?'배스 온도 유지':'대기 상태';
+ $('vacDetail').textContent=s.pump?'배기 작동':'진공 펌프 대기';
+ $('svgPressure').textContent=s.pressure.toFixed(s.pressure<1?3:2);
+ $('svgTemp').textContent=s.temp.toFixed(1)+' K';
+ $('svgValve').textContent=s.phase==='dosing'&&!s.paused?'OPEN':'CLOSED';
+ $('svgStatus').textContent=s.paused?'PAUSED':s.stageBusy||s.phase==='equilibrating'?'RUNNING':s.done?'COMPLETE':s.aborted?'STOPPED':s.running?'ACTIVE':'READY';
+ $('svgGas').textContent=spec.gas;
+ $('svgBath').textContent=spec.temp.toFixed(spec.temp===77?0:1)+' K';
+ $('tubeAbsent').style.opacity=s.tube?'0':'1';$('bathCover').style.opacity=s.bath?'0':'1';
+ $('valveHandle').style.stroke=s.sealed?'#64dbb8':'#bb886d';$('hardwareLed').style.fill=s.stageBusy||s.running?'#43d1b3':s.done?'#43d1b3':'#cfb66e';
+ $('valveLed').style.fill=s.phase==='dosing'?'#60ddb7':'#4d6771';$('heLed').style.fill=s.stageBusy==='he'?'#60ddb7':'#4d6771';
+ const pct=clip((s.samples.length? s.samples[s.samples.length-1].q/maxQ(spec):0),0,1);
+ $('sampleFill').setAttribute('y',String(332-clip(pct*20,0,20)));$('sampleFill').setAttribute('height',String(12+clip(pct*20,0,20)));
+ const kind=s.paused||s.aborted?'idle':s.stageBusy==='degas'?'degas':s.stageBusy==='leak'?'leak':s.stageBusy==='he'?'helium':s.phase==='dosing'?'dosing':'idle';
+ $('machineStage').dataset.action=kind;
+ $('machineMode').innerHTML=(s.paused?'PAUSED':s.aborted?'STOPPED':s.stageBusy?s.stageBusy.toUpperCase():s.running?s.phase.toUpperCase():s.done?'COMPLETE':s.step===0?'STANDBY':'READY')+' <span class="mode-pill">●</span>';
+ $('tPointsMax').textContent='/ '+(s.targets.length||'—');
+ $('traceState').textContent=s.paused?'PAUSED':s.aborted?'STOPPED':s.stageBusy||s.running?'LIVE':s.done?'완료':'대기';$('isoState').textContent=s.samples.length+' points';
+ $('downloadCSV').disabled=!s.samples.length;
+ $('xAxisFoot').textContent=spec.gas==='N₂'?'x = P / P₀ (N₂, 77 K)':'x = P / 100 kPa (H₂)';
+}
+function renderLogs(){
+ $('eventCount').textContent=state.log.length+' EVENTS';
+ $('logList').innerHTML=state.log.slice(0,80).map(e=>`<div class="log-row"><span class="log-time">+${fmtTime(e.t)}</span><span class="log-text ${e.level}">${esc(e.message)}</span></div>`).join('');
+}
+function fmtTime(t){let h=Math.floor(t/3600),m=Math.floor(t/60)%60,s=Math.round(t)%60;return h?`${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`:`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`}
+function updateProgress(value,text){const b=$('busyBar'),p=$('busyPercent'),m=$('busyMessage');if(b)b.style.width=(100*value).toFixed(1)+'%';if(p)p.textContent=Math.round(100*value)+'%';if(m&&text)m.textContent=text}
+function runSequence(type,millis,onFrame,onEnd){
+ if(state.stageBusy||state.running)return;
+ state.stageBusy=type;
+ renderStage();
+ let start=performance.now();
+ const sessionStart=state.sessionElapsed;
+ const simulatedDuration=type==='degas'?state.degMinutes*60:type==='leak'?60:45;
+ busyTimer=setInterval(()=>{
+   const f=clip((performance.now()-start)/millis,0,1);
+   state.sessionElapsed=sessionStart+simulatedDuration*f;
+   onFrame(f);updateProgress(f,type==='degas'?'시료 탈기 · 가열 및 배기 진행 중':type==='leak'?'배기 후 압력 상승 감시 중':'He 충전 · 팽창 · 압력 기록 중');updateMachine();
+   if(f>=1){clearInterval(busyTimer);busyTimer=null;state.stageBusy=null;onEnd();}
+ },55);
+}
+function handleAction(act){const s=state;
+ if(act==='tare'){if(s.step!==0)return;s.tare=true;log('전자저울: 시료 튜브 영점 조정 (TARE).','good');renderStage();}
+ else if(act==='place'){if(s.step!==0||!s.tare)return;s.powder=true;log(`미지 시료 투입: ${s.mass.toFixed(4)} g 계량.`,'good');renderStage();}
+ else if(act==='copy-mass'){if(!s.powder)return;$('massEntry').value=s.mass.toFixed(4);toast('전자저울 측정값을 입력란에 복사했습니다.');}
+ else if(act==='mass-confirm'){
+  if(s.step!==0||!s.powder)return;const v=Number($('massEntry').value);
+  if(!Number.isFinite(v)||v<.02||Math.abs(v-s.mass)>.002){showErr('저울 표시와 입력 질량이 일치하지 않습니다. 계량값을 확인하세요.');return}
+  s.enteredMass=v;log(`시료 질량 등록: ${v.toFixed(4)} g.`,'good');enterStep(1);}
+ else if(act==='degas-start'){
+  if(s.step!==1||s.stageBusy)return;
+  const T=Number($('degasTemp').value),min=Number($('degasMinutes').value);
+  if(!Number.isFinite(T)||T<40||T>320||!Number.isFinite(min)||min<10||min>180){showErr('탈기 온도(40–320°C)와 시간(10–180 min)을 확인하세요.');return}
+  s.degTemp=T;s.degMinutes=min;s.pump=true;
+  log(`탈기 시작: ${T}°C, ${min} min, 진공 펌프 ON.`);
+  runSequence('degas',3350,(f)=>{s.temp=298.15+(T+273.15-298.15)*Math.min(1,f*1.25);s.pressure=.018+(101.325-.018)*Math.exp(-9.5*f);},()=>{
+   s.temp=298.15;s.pressure=.021;s.pump=false;s.degassed=true;
+   s.quality=T>=110&&min>=30?1:clip(.82+.18*Math.min(1,T/110)*Math.min(1,min/30),.83,1);
+   log(s.quality>=.995?'탈기 완료: 표준 전처리 조건 충족.':'탈기 완료: 전처리 부족 가능성이 있습니다.',s.quality>=.995?'good':'warn');enterStep(2);
+  });
+ }
+ else if(act==='tube'){if(s.step!==2)return;s.tube=true;log('시료 튜브를 분석 포트에 장착했습니다.','good');renderStage();}
+ else if(act==='bath'){if(s.step!==2)return;s.bath=true;s.temp=spec.temp;log(`${spec.gas} 분석 배스 설정: ${spec.temp} K.`,'good');renderStage();}
+ else if(act==='seal'){if(s.step!==2&&s.step!==3)return;if(s.stageBusy)return;s.sealed=true;log('시료 튜브 O-ring을 체결했습니다.','good');renderStage();}
+ else if(act==='mount-confirm'){if(s.step!==2||!s.tube||!s.bath)return;s.pressure=101.325;enterStep(3);}
+ else if(act==='leak-start'){
+  if(s.step!==3||s.stageBusy)return;
+  s.pump=true;log('진공 펌프 가동 및 누설 검사 시작.');
+  runSequence('leak',3100,(f)=>{s.pressure=.025+(101.325-.025)*Math.exp(-15*f)+(s.sealed?0:1.8*f**3);},()=>{
+   s.pump=false;s.pressure=s.sealed?.025:1.825;
+   if(s.sealed){log('누설 검사 합격: 진공 유지 및 압력 상승 허용 범위 충족.','good');enterStep(4)}
+   else{log('누설 검사 실패: O-ring 밀폐 상태를 확인하십시오.','warn');toast('LEAK FAIL · O-ring을 체결한 후 다시 시험하세요.',true);renderStage()}
+  });
+ }
+ else if(act==='he-start'){
+  if(s.step!==4||s.stageBusy)return;
+  const cM=MANIFOLD_V/(RG*MANIFOLD_T),cS=spec.voidV/(RG*spec.temp);
+  const p0=72+uniform(-2,2),peq=p0*cM/(cM+cS);
+  log('He 주입 및 기준 공간 측정 시작.');s.heBefore=p0;s.heAfter=peq;
+  runSequence('he',3000,(f)=>{s.pressure=f<.4?p0*(f/.4):peq+(p0-peq)*Math.exp(-14*(f-.4));s.temp=spec.temp;},()=>{
+   const pmeas=peq*(1+.001*normal());
+   s.heAfter=pmeas;
+   s.voidMeas=clip(MANIFOLD_V*(p0/pmeas-1)*spec.temp/MANIFOLD_T,1,12);
+   s.pressure=.026;
+   log(`He 자유공간: ${s.voidMeas.toFixed(3)} mL (매니폴드 ${MANIFOLD_V.toFixed(1)} mL).`,'good');
+   log('He 배출 및 셀 재배기 완료.','good');enterStep(5);
+  });
+ }
+ else if(act==='analysis-start'){
+  if(s.step!==5||s.running||s.done||s.aborted)return;
+  const n=Number($('pointCount').value),eq=Number($('eqTolerance').value),maxWait=Number($('maxWait').value),speed=Number($('speedInput').value);
+  if(!Number.isInteger(n)||n<12||n>48||!Number.isFinite(eq)||eq<.1||eq>10||!Number.isFinite(maxWait)||maxWait<30||maxWait>300||![1,4,12,24].includes(speed)){showErr('압력점·평형 기준·최대 시간 설정을 확인하세요.');return}
+  s.requestedCount=n;s.eqTolerance=eq;s.maxWait=maxWait;s.speed=speed;
+  s.targets=chooseTargets(spec,n);s.samples=[];s.trace=[];s.elapsed=0;s.pointIndex=0;s.running=true;s.paused=false;s.done=false;s.aborted=false;
+  s.q=0;s.nTotal=0;s.pressure=.020;s.phase='idle';s.initialPressure=.02;
+  log(`흡착 등온선 자동 측정 시작: ${n} points / ${spec.gas} / ${spec.temp} K / 속도 ×${speed}.`,'good');
+  startPoint();renderStage();drawAll();
+  clearInterval(analysisTimer);analysisTimer=setInterval(scanTick,55);
+ }
+ else if(act==='pause'){
+  if(!s.running)return;s.paused=!s.paused;log(s.paused?'측정 일시정지.':'측정 재개.');renderStage();updateMachine();
+ }
+ else if(act==='abort'){
+  if(!s.running)return;s.running=false;s.paused=false;s.aborted=true;s.phase='idle';clearInterval(analysisTimer);analysisTimer=null;
+  log(`측정 중단: ${s.samples.length} points 확보.`,'warn');renderStage();updateMachine();
+ }
+ else if(act==='retry'){
+  if(s.running||s.step!==5)return;
+  s.done=false;s.aborted=false;s.samples=[];s.trace=[];s.phase='idle';s.elapsed=0;log('동일 시료의 재측정 준비.');renderStage();drawAll();updateData();
+ }
+ else if(act==='csv')downloadCSV();
+}
+function startPoint(){const s=state;
+ if(s.pointIndex>=s.targets.length){finish();return;}
+ const x=s.targets[s.pointIndex],pt=x*spec.pref,cGas=spec.voidV/(RG*spec.temp);
+ const eqN=pt*cGas+s.mass*s.quality*eqBase(spec,x);
+ const aimed=Math.max(s.nTotal+.00001,eqN*(1+normal()*.0004));
+ s.doseDelta=aimed-s.nTotal;s.nTotal=aimed;s.currentTarget=x;s.pointElapsed=0;s.doseTime=0;s.phase='dosing';s.stepP0=s.pressure;
+ s.initialPressure=clip((s.nTotal-s.mass*s.q)/cGas,0,150);
+ s.lastCheckP=s.stepP0;s.lastCheckTime=0;
+ log(`${String(s.pointIndex+1).padStart(2,'0')}/${s.targets.length} 주입 시작 · 목표 x=${x.toFixed(4)}, 주입 ${s.doseDelta.toFixed(4)} mmol.`);
+}
+function equilibriumSubstep(dt){
+ const s=state,cGas=spec.voidV/(RG*spec.temp),mass=s.mass;
+ const x=clip((s.nTotal-mass*s.q)/cGas/spec.pref,0,.97);
+ const qeq=s.quality*eqBase(spec,x);
+ const tFactor=spec.kind==='dr'?1.4:spec.kind==='heterogeneous'?1.25:1;
+ const tau=spec.baseTau*tFactor*(1+.35*s.q/Math.max(.2,maxQ(spec)));
+ let dq=(qeq-s.q)*(dt/tau);
+ s.q=clip(s.q+dq,0,s.nTotal/mass);
+ s.pressure=Math.max(.0001,(s.nTotal-mass*s.q)/cGas);
+}
+function scanTick(){const s=state;if(!s.running||s.paused)return;
+ const simDelta=.65*s.speed;
+ if(s.phase==='dosing'){
+  s.doseTime+=simDelta;s.pointElapsed+=simDelta;s.elapsed+=simDelta;s.sessionElapsed+=simDelta;
+  const f=clip(s.doseTime/5,0,1);
+  s.pressure=s.stepP0+(s.initialPressure-s.stepP0)*(1-(1-f)**2);
+  if(s.doseTime>=5){s.pressure=s.initialPressure;s.phase='equilibrating';s.pointElapsed=0;s.lastCheckP=s.pressure;s.lastCheckTime=0;}
+ }else if(s.phase==='equilibrating'){
+  const sub=Math.max(1,Math.ceil(simDelta/.16)),dt=simDelta/sub;
+  for(let i=0;i<sub;i++)equilibriumSubstep(dt);
+  s.pointElapsed+=simDelta;s.elapsed+=simDelta;s.sessionElapsed+=simDelta;
+  const validDT=s.pointElapsed-s.lastCheckTime;
+  if(validDT>=4){
+   const dpdt=Math.abs(s.pressure-s.lastCheckP)/validDT*60;
+   s.lastCheckP=s.pressure;s.lastCheckTime=s.pointElapsed;
+   if(s.pointElapsed>=14&&dpdt<s.eqTolerance){finishPoint('EQUILIBRATED')}
+  }
+  if(s.phase==='equilibrating'&&s.pointElapsed>=s.maxWait)finishPoint('MAX WAIT');
+ }
+ recordTrace();updateMachine();if(s.running)updateScanningDisplay();drawAll();
+}
+function recordTrace(){const s=state;s.trace.push({t:s.elapsed,p:s.pressure});if(s.trace.length>1600)s.trace.splice(0,s.trace.length-1600)}
+function finishPoint(flag){const s=state,cGas=s.voidMeas/(RG*spec.temp),mass=s.enteredMass||s.mass;
+ const pMeasured=Math.max(.0001,s.pressure*(1+.0007*normal())+.007*normal());
+ const rawQ=(s.nTotal-cGas*pMeasured)/mass;
+ const noiseSD=.006+.007*Math.max(0,s.q);
+ const pressureSD=Math.hypot(.0007*s.pressure,.007);
+ const freeSpaceSD=MANIFOLD_V*(s.heBefore/s.heAfter)*(spec.temp/MANIFOLD_T)*.001;
+ const massSD=.00005/Math.sqrt(3); // balance display resolution, uniform rounding interval
+ const u=Math.hypot(noiseSD,cGas*pressureSD/mass,pMeasured*freeSpaceSD/(RG*spec.temp*mass),Math.abs(s.q)*massSD/mass);
+ const q=Math.max(0,rawQ+noiseSD*normal());
+ const rec={i:s.pointIndex+1,x:pMeasured/spec.pref,p:pMeasured,q,u,time:s.pointElapsed,flag,dose:s.doseDelta,nTotal:s.nTotal,T:spec.temp,gas:spec.gas};
+ s.samples.push(rec);s.pointIndex++;
+ log(`평형점 ${rec.i} 기록: P=${rec.p.toFixed(3)} kPa, q=${rec.q.toFixed(3)} mmol/g (${flag}).`,flag==='EQUILIBRATED'?'good':'warn');
+ updateData();
+ if(s.pointIndex>=s.targets.length){finish()}else startPoint();
+}
+function finish(){const s=state;s.phase='idle';s.running=false;s.done=true;s.paused=false;clearInterval(analysisTimer);analysisTimer=null;
+ log(`분석 완료: ${s.samples.length}/${s.targets.length}개 압력점 기록. CSV 저장 가능.`,'good');
+ toast('흡착 측정이 완료되었습니다. 원자료를 다운로드하세요.');renderStage();updateMachine();updateData();drawAll();
+}
+function updateScanningDisplay(){const s=state,pct=s.targets.length?100*s.samples.length/s.targets.length:0;
+ const bar=$('scanBar'),num=$('scanPercent'),message=$('scanMessage');if(bar)bar.style.width=pct+'%';if(num)num.textContent=Math.round(pct)+'%';
+ if(message)message.textContent=`${s.phase==='dosing'?'가스 주입':'평형 대기'} · ${s.pointIndex+1}/${s.targets.length} · ${Math.floor(s.pointElapsed)} virtual s`;
+}
+function updateData(){const rows=state.samples;
+ $('dataRows').innerHTML=rows.length?rows.map(v=>`<tr><td>${v.i}</td><td>${v.x.toFixed(6)}</td><td>${v.p.toFixed(4)}</td><td>${v.q.toFixed(5)}</td><td>${v.u.toFixed(5)}</td><td>${v.time.toFixed(1)}</td><td>${v.flag==='EQUILIBRATED'?'평형':'대기 초과'}</td></tr>`).join(''):'<tr><td class="empty-table" colspan="7">측정을 완료하면 원자료가 이곳에 기록됩니다.</td></tr>';
+ updateMachine();
+}
+function download(name,data,mime='text/csv;charset=utf-8'){const b=new Blob([(mime.startsWith('text/csv')?'\uFEFF':'')+data],{type:mime}),url=URL.createObjectURL(b),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1200)}
+function downloadCSV(){const s=state;if(!s.samples.length){toast('먼저 측정 데이터를 취득하세요.',true);return;}
+ const hdr=['run_id','point','adsorptive','analysis_T_K','reference_P_kPa','relative_pressure_x','absolute_P_kPa','adsorbed_q_mmol_g','standard_uncertainty_mmol_g','equilibration_time_virtual_s','equilibrium_flag','dose_mmol','cumulative_dosed_mmol','sample_mass_g','measured_free_space_mL'];
+ const data=[hdr.join(','),...s.samples.map(v=>[spec.id,v.i,v.gas,v.T.toFixed(2),spec.pref.toFixed(3),v.x.toFixed(8),v.p.toFixed(6),v.q.toFixed(6),v.u.toFixed(6),v.time.toFixed(2),v.flag,v.dose.toFixed(6),v.nTotal.toFixed(6),s.enteredMass.toFixed(4),s.voidMeas.toFixed(4)].join(','))].join('\r\n');
+ download(`ACE_Adsorption_${spec.id}.csv`,data);log('측정 원자료 CSV 내려받기.','good');
+}
+function downloadLog(){const s=state;
+ const record={
+  format:'ACE Virtual Sorption Lab / educational simulation log',
+  simulated:true,run_id:spec.id,
+  protocol:{gas:spec.gas,temperature_K:spec.temp,reference_pressure_kPa:spec.pref,
+   sample_mass_g:s.enteredMass,degassing_temperature_C:s.degassed?s.degTemp:null,
+   degassing_duration_min:s.degassed?s.degMinutes:null,
+   helium_free_space_mL:s.voidMeas,pressure_points_requested:s.targets.length,
+   pressure_points_measured:s.samples.length,equilibrium_threshold_kPa_min:s.eqTolerance,
+   max_equilibrium_wait_virtual_s:s.maxWait,status:s.done?'COMPLETE':s.running?'RUNNING':'INCOMPLETE'},
+  events:s.log.slice().reverse().map(e=>({virtual_time_s:e.t,level:e.level,message:e.message}))
+ };
+ download(`ACE_RunLog_${spec.id}.json`,JSON.stringify(record,null,2),'application/json;charset=utf-8');
+ toast('실험 기록(JSON)을 내려받았습니다.');
+}
+function blankPlot(kind){return `<rect width="720" height="330" fill="#fff"/><text x="360" y="173" text-anchor="middle" class="svg-annotation">${kind==='pressure'?'측정이 시작되면 압력 응답이 나타납니다.':'평형점이 기록되면 등온선이 만들어집니다.'}</text>`}
+function drawPressure(){const svg=$('pressurePlot'),arr=state.trace;if(!arr.length){svg.innerHTML=blankPlot('pressure');return}
+ const W=720,H=330,L=76,R=27,T=24,B=55;
+ const tmax=Math.max(12,state.elapsed),tmin=Math.max(0,tmax-245);let recent=arr.filter(e=>e.t>=tmin);if(!recent.length)recent=[arr[arr.length-1]];
+ const maxP=Math.max(1,...recent.map(v=>v.p)),axis=axisFor(maxP*1.1,5),yMax=axis.max;
+ const X=x=>L+(W-L-R)*(x-tmin)/(tmax-tmin||1),Y=p=>T+(H-T-B)*(1-p/yMax);
+ let b=`<rect width="720" height="330" fill="#fff"/>`;
+ for(let k=0;k<=axis.count;k++){const v=k*axis.step,y=Y(v);b+=`<line class="svg-grid" x1="${L}" y1="${y}" x2="${W-R}" y2="${y}"/><text class="svg-tick" x="${L-12}" y="${y+4}" text-anchor="end">${tickLabel(v,axis.step)}</text>`}
+ for(let j=0;j<=4;j++){const t=tmin+(tmax-tmin)*j/4,x=X(t);b+=`<text class="svg-tick" x="${x}" y="${H-B+22}" text-anchor="middle">${Math.round(t)}</text>`}
+ b+=`<path class="svg-axis" d="M${L},${T}V${H-B}H${W-R}" fill="none"/><text class="svg-title" x="${(L+W-R)/2}" y="${H-9}" text-anchor="middle">가상 시간 (s)</text><text class="svg-title" x="20" y="${(T+H-B)/2}" text-anchor="middle" transform="rotate(-90 20 ${(T+H-B)/2})">압력 (kPa)</text>`;
+ const coords=recent.map(v=>`${X(v.t).toFixed(2)},${Y(v.p).toFixed(2)}`).join(' L');
+ b+=`<path d="M${coords}" class="svg-line"/>`;
+ const last=recent[recent.length-1];b+=`<circle cx="${X(last.t)}" cy="${Y(last.p)}" r="4.7" fill="#159e83" stroke="white" stroke-width="2"/>`;
+ svg.innerHTML=b;$('traceFoot').textContent=`최근 ${Math.round(tmax-tmin)}s · 가상 시간`;}
+function drawIsotherm(){const svg=$('isothermPlot'),arr=state.samples;if(!arr.length){svg.innerHTML=blankPlot('isotherm');return}
+ const W=720,H=330,L=77,R=25,T=24,B=55,yobs=Math.max(...arr.map(v=>v.q+v.u));const a=axisFor(Math.max(yobs*1.07,.15),5),X=x=>L+(W-L-R)*clip(x,0,1),Y=y=>T+(H-T-B)*(1-y/a.max);
+ let b='<rect width="720" height="330" fill="#fff"/>';
+ for(let k=0;k<=a.count;k++){const v=k*a.step,y=Y(v);b+=`<line class="svg-grid" x1="${L}" y1="${y}" x2="${W-R}" y2="${y}"/><text class="svg-tick" x="${L-12}" y="${y+4}" text-anchor="end">${tickLabel(v,a.step)}</text>`}
+ for(let j=0;j<=5;j++){const x=X(j/5);b+=`<text class="svg-tick" x="${x}" y="${H-B+22}" text-anchor="middle">${(j/5).toFixed(1)}</text>`}
+ b+=`<path class="svg-axis" d="M${L},${T}V${H-B}H${W-R}" fill="none"/><text class="svg-title" x="${(L+W-R)/2}" y="${H-9}" text-anchor="middle">정규화 압력 x = P / P_ref</text><text class="svg-title" x="19" y="${(T+H-B)/2}" text-anchor="middle" transform="rotate(-90 19 ${(T+H-B)/2})">흡착량 q (mmol/g)</text>`;
+ arr.forEach(v=>{const x=X(v.x),y=Y(v.q),upper=Y(Math.min(a.max,v.q+v.u)),lower=Y(Math.max(0,v.q-v.u));b+=`<path class="svg-error" d="M${x},${upper}V${lower}M${x-4},${upper}H${x+4}M${x-4},${lower}H${x+4}"/><circle class="svg-dot" cx="${x}" cy="${y}" r="4.5"/>`});
+ svg.innerHTML=b;}
+function drawAll(){drawPressure();drawIsotherm()}
+function wire(){
+ $('stageContent').addEventListener('click',e=>{const t=e.target.closest('[data-act]');if(t&&!t.disabled)handleAction(t.dataset.act)});
+ $('downloadCSV').addEventListener('click',downloadCSV);$('downloadLog').addEventListener('click',downloadLog);
+ $('newRun').addEventListener('click',()=>{if(state.step>0||state.samples.length){if(!confirm('현재 실험이 초기화되고 새 미지 시료가 생성됩니다. 계속하시겠습니까?'))return;}reset()});
+ $('viewLog').addEventListener('click',()=>{$('logPanel').scrollIntoView({behavior:'smooth',block:'center'})});
+ for(const [id,resolver] of [
+  ['pumpSymbol',()=>state.step===1?'degas-start':state.step===3?'leak-start':null],
+  ['heHotspot',()=>state.step===4?'he-start':null],
+  ['doseHotspot',()=>state.step===5&&!state.running&&!state.done&&!state.aborted?'analysis-start':null]
+ ]){
+   const el=$(id);const press=()=>{const act=resolver();if(act)handleAction(act);else toast('해당 단계에서 장치를 조작할 수 있습니다.')};
+   el.addEventListener('click',press);el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();press()}});
+ }
+ for(const [id,act] of [['tubeHotspot','tube'],['bathHotspot','bath']]){
+  const el=$(id);el.addEventListener('click',()=>{if(state.step===2)handleAction(act);else toast('시료 장착 단계에서 조작할 수 있습니다.')});
+  el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();if(state.step===2)handleAction(act);else toast('시료 장착 단계에서 조작할 수 있습니다.')}})
+ }
+}
+function reset(){clearInterval(busyTimer);clearInterval(analysisTimer);busyTimer=analysisTimer=null;state=newState();renderRail();renderStage();renderLogs();updateData();drawAll();log(`미지 시료 ${spec.id} 생성. 시료 형태: 고체 분말.`, 'good');toast('새 미지 시료가 준비되었습니다. 계량부터 시작하세요.')}
+wire();reset();
+})();
+
+</script>
+</body></html>
