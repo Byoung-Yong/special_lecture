@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>평형전위와 전기화학 전류</title>
+<style>
+:root{--text:#1a303a;--soft:#52636b;--line:#d9e3e5;--bg:#f3f7f7;--white:#fff;--cath:#008f8a;--anod:#e18239;--net:#284d9a;--eq:#187e62}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;color:var(--text);font-family:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;font-size:15px;line-height:1.5}
+main{max-width:1300px;margin:0 auto;padding:28px 28px 38px}
+header{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;margin-bottom:23px;border-bottom:1px solid var(--line);padding:0 0 15px}
+h1{font-size:28px;letter-spacing:-.8px;line-height:1.25;margin:0;font-weight:750}
+.reaction{font:italic 24px "Cambria Math","STIX Two Math",Cambria,Georgia,serif;white-space:nowrap}
+.layout{display:grid;grid-template-columns:300px minmax(0,1fr);gap:20px;align-items:start}
+.controls{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:24px;min-width:0}
+.controls h2{font-size:17px;margin:0 0 20px;font-weight:750}
+.field{margin-bottom:23px}
+.field label{display:block;font-size:14px;font-weight:700;margin-bottom:8px}
+.field input{width:100%;background:#fff;border:1px solid #b8c9cb;color:var(--text);border-radius:8px;font-size:20px;font-variant-numeric:tabular-nums;padding:11px 12px;min-height:50px;outline:none}
+.field input:focus{border-color:var(--net);box-shadow:0 0 0 3px #284d9a26}
+.field input[aria-invalid=true]{border-color:#c43c32}
+.units{font-size:12px;color:var(--soft);margin-top:5px}
+.error{font-size:13px;color:#af332c;line-height:1.5;margin:8px 0 0;min-height:17px}
+.constant{margin-top:7px;border-top:1px solid var(--line);padding-top:17px;font-size:12.5px;color:var(--soft);line-height:1.8}
+.constant strong{color:var(--text);font-weight:650}
+.visual{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:21px 23px 16px;min-width:0}
+.readouts{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px}
+.value-block{padding:5px 10px 11px;border-bottom:2px solid var(--line)}
+.value-block.feature{border-bottom-color:var(--eq)}
+.value-block .small{display:block;font-size:12px;color:var(--soft);font-weight:650;margin-bottom:4px}
+.value-block .number{font-size:25px;font-weight:760;letter-spacing:-.5px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.value-block.feature .number{color:var(--eq)}
+.value-block .unit{font-size:14px;font-weight:600;color:var(--soft)}
+.graph-title{font-size:17px;font-weight:750;margin:5px 0 9px}
+.graph-header{display:flex;align-items:center;justify-content:space-between;gap:18px;margin:4px 0 9px;flex-wrap:wrap}
+.graph-header .graph-title{margin:0}
+.current-scale{display:flex;align-items:center;gap:9px;min-width:250px}
+.current-scale label{color:var(--soft);font-size:13px;font-weight:700;white-space:nowrap}
+.current-scale input{width:100px;accent-color:var(--net);cursor:pointer}
+.current-scale output{font:700 14px "Cambria Math",Cambria,Georgia,serif;min-width:65px;text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.current-scale input:focus-visible{outline:3px solid #284d9a88;outline-offset:3px}
+.legend{display:flex;gap:18px;flex-wrap:wrap;margin:0 0 3px;font-size:13px;color:var(--soft)}
+.legend span{display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
+.legend i{width:22px;border-top:3px solid;display:inline-block}
+.legend .cath i{border-color:var(--cath)}.legend .anod i{border-color:var(--anod)}.legend .net i{border-color:var(--net)}
+#plot{width:100%;height:auto;display:block;touch-action:pan-y;overflow:visible}
+#plot .axis-text{fill:#607179;font-family:system-ui,sans-serif;font-size:14px}
+#plot .axis-title{fill:#31454d;font-family:system-ui,sans-serif;font-size:16px;font-weight:600}
+.note{margin:10px 0 0;font-size:13px;color:var(--soft)}
+.formula{background:#fff;border:1px solid var(--line);border-radius:12px;margin-top:20px;padding:18px 25px;font-family:"Cambria Math","STIX Two Math",Cambria,Georgia,serif;line-height:1.9;font-size:19px;overflow-wrap:anywhere}
+.formula .formula-row{display:flex;gap:18px;align-items:baseline;flex-wrap:wrap}
+.formula .formula-row+.formula-row{margin-top:3px}
+.formula .tag{font:700 12px "Noto Sans KR","Malgun Gothic",sans-serif;letter-spacing:0;color:var(--soft);min-width:85px;flex:none}
+.math-italic{font-style:italic}
+.formula .derived{font-size:15px;color:var(--soft);font-family:"Noto Sans KR","Malgun Gothic",sans-serif}
+
+/* All five experimental parameters use sliders. */
+.field .slider-heading{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:8px}
+.field .slider-heading label{margin:0}
+.field .slider-number{font:750 17px "Cambria Math","STIX Two Math",Cambria,Georgia,serif;white-space:nowrap;font-variant-numeric:tabular-nums;color:var(--text)}
+.field input[type=range]{display:block;width:100%;height:32px;min-height:32px;padding:0;border:0;border-radius:0;box-shadow:none;accent-color:var(--net);background:transparent;cursor:pointer}
+.field input[type=range]:focus-visible{outline:3px solid #284d9a88;outline-offset:2px}
+.field input[type=range]:focus{box-shadow:none;border:0}
+
+@media(max-width:960px){main{padding:19px}.layout{grid-template-columns:250px minmax(0,1fr);gap:13px}.controls,.visual{padding:17px}.readouts{gap:4px}.value-block .number{font-size:20px}h1{font-size:24px}}
+@media(max-width:700px){header{display:block}.reaction{margin-top:10px;font-size:21px}.layout{grid-template-columns:1fr}.controls{padding:19px}.field{margin-bottom:15px}.readouts{grid-template-columns:repeat(3,minmax(0,1fr))}.value-block .number{font-size:19px}.value-block .unit{font-size:12px}.legend{font-size:12px;gap:9px}.visual{padding:14px 10px 15px}.formula{padding:15px;font-size:16px}.formula .tag{min-width:0;width:100%;margin-bottom:-13px}}
+@media(max-width:420px){.readouts{grid-template-columns:1fr 1fr}.value-block:nth-child(3){grid-column:span 2}.legend span{white-space:normal}.reaction{font-size:18px}}
+</style>
+</head>
+<body>
+<main>
+  <header><h1>평형전위와 전기화학 전류</h1><div class="reaction">O + e<sup>−</sup> ⇌ R</div></header>
+  <div class="layout">
+    <section class="controls" aria-label="학생 실험 조건 입력">
+      <h2>실험 조건</h2>
+
+      <div class="field"><div class="slider-heading"><label for="co">산화형 농도 [O] (M)</label><output id="co-value" class="slider-number" for="co">0.010 M</output></div><input id="co" type="range" min="-6" max="0" step="0.01" value="-2" aria-label="산화형 농도"><div class="units">10⁻⁶–1 M · 로그 눈금</div></div>
+      <div class="field"><div class="slider-heading"><label for="cr">환원형 농도 [R] (M)</label><output id="cr-value" class="slider-number" for="cr">0.010 M</output></div><input id="cr" type="range" min="-6" max="0" step="0.01" value="-2" aria-label="환원형 농도"><div class="units">10⁻⁶–1 M · 로그 눈금</div></div>
+      <div class="field"><div class="slider-heading"><label for="e0">형식전위 E°′ (V vs SHE)</label><output id="e0-value" class="slider-number" for="e0">+0.20 V</output></div><input id="e0" type="range" min="-1" max="1" step="0.01" value="0.20" aria-label="형식전위"><div class="units">−1.00–+1.00 V</div></div>
+      <div class="field"><div class="slider-heading"><label for="alpha">전하이동계수 α</label><output id="alpha-value" class="slider-number" for="alpha">0.50</output></div><input id="alpha" type="range" min="0.10" max="0.90" step="0.01" value="0.50" aria-label="전하이동계수"><div class="units">0.10–0.90</div></div>
+      <div class="field"><div class="slider-heading"><label for="k0">표준 속도상수 k⁰ (cm/s)</label><output id="k0-value" class="slider-number" for="k0">0.0030 cm/s</output></div><input id="k0" type="range" min="-5" max="-1" step="0.000001" value="-2.522879" aria-label="표준 속도상수"><div class="units">10⁻⁵–10⁻¹ cm/s · 로그 눈금</div></div>
+      <p id="error" class="error" role="alert" aria-live="polite"></p>
+      <div class="constant">고정 조건<br><strong>T = 298.15 K · n = 1</strong><br><strong>A = 0.100 cm²</strong></div>
+    </section>
+    <section class="visual" aria-label="부분전류 및 평형전위 그래프">
+      <div class="readouts">
+        <div class="value-block"><span class="small">형식전위 E°′</span><span class="number" id="formal">0.2000</span> <span class="unit">V</span></div>
+        <div class="value-block feature"><span class="small">평형전위 E<sub>eq</sub></span><span class="number" id="equilibrium">0.2000</span> <span class="unit">V</span></div>
+        <div class="value-block"><span class="small">평형전위 이동 E<sub>eq</sub> − E°′</span><span class="number" id="shift">0.0</span> <span class="unit">mV</span></div>
+      </div>
+      <div class="graph-header">
+        <div class="graph-title">전류–전위 관계</div>
+        <div class="current-scale"><label for="current-scale">전류축 스케일</label><input id="current-scale" type="range" min="0" max="2" step="1" value="1" aria-label="전류축 고정 스케일, 세 단계"><output id="scale-value" for="current-scale">±10 mA</output></div>
+      </div>
+      <div class="legend" aria-label="그래프 범례">
+        <span class="cath"><i></i>환원전류 i<sub>c</sub> (+)</span>
+        <span class="anod"><i></i>산화전류 −i<sub>a</sub> (−)</span>
+        <span class="net"><i></i>순전류 i<sub>net</sub></span>
+      </div>
+      <svg id="plot" viewBox="0 0 960 570" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="환원전류, 산화전류 및 순전류를 전위에 대해 나타낸 그래프">
+        <defs><clipPath id="plot-clip"><rect x="88" y="54" width="835" height="435" /></clipPath></defs>
+        <rect x="88" y="54" width="835" height="435" fill="#fff"/>
+        <g id="grid"></g>
+        <g clip-path="url(#plot-clip)">
+          <path id="formal-line" fill="none" stroke="#99a9b0" stroke-width="2" stroke-dasharray="6 7"/>
+          <path id="eq-line" fill="none" stroke="#187e62" stroke-width="2.5" stroke-dasharray="8 5"/>
+          <path id="cath-line" fill="none" stroke="#008f8a" stroke-width="3.4" stroke-linecap="round"/>
+          <path id="anod-line" fill="none" stroke="#e18239" stroke-width="3.4" stroke-linecap="round"/>
+          <path id="net-line" fill="none" stroke="#284d9a" stroke-width="4" stroke-linecap="round"/>
+          <circle id="eq-point" r="7" fill="#187e62" stroke="white" stroke-width="2"/>
+        </g>
+        <g id="annotations"></g>
+        <text x="505" y="550" text-anchor="middle" class="axis-title">전극 전위 E (V vs SHE)</text>
+        <text id="y-axis-title" x="23" y="278" text-anchor="middle" class="axis-title" transform="rotate(-90 23 278)">전류 (mA)</text>
+      </svg>
+      <p class="note">초록색 점선: 평형전위 (i<sub>net</sub> = 0) · 회색 점선: 형식전위 E°′ · 전위축 기준: E°′ ±0.40 V</p>
+    </section>
+  </div>
+  <section class="formula" aria-label="평형전위와 전류식">
+    <div class="formula-row"><span class="tag">평형전위</span><span><i>E</i><sub>eq</sub> = <i>E</i>°′ + <span style="white-space:nowrap"><i>RT</i> / <i>F</i></span> ln([O]/[R])</span><span id="substitution" class="derived"></span></div>
+    <div class="formula-row"><span class="tag">부분전류</span><span><i>i</i><sub>c</sub> = <i>FAk</i><sup>0</sup>[O] e<sup>−α<i>F</i>(<i>E</i>−<i>E</i>°′)/<i>RT</i></sup></span><span style="color:#64747c">·</span><span><i>i</i><sub>a</sub> = <i>FAk</i><sup>0</sup>[R] e<sup>(1−α)<i>F</i>(<i>E</i>−<i>E</i>°′)/<i>RT</i></sup></span></div>
+    <div class="formula-row"><span class="tag">순전류</span><span><i>i</i><sub>net</sub> = <i>i</i><sub>c</sub> − <i>i</i><sub>a</sub></span></div>
+  </section>
+</main>
+<script>
+(()=>{
+  'use strict';
+  const R=8.314462618, F=96485.33212, T=298.15, A=0.100;
+  const B={left:88,right:923,top:54,bottom:489,width:835,height:435};
+  const $=id=>document.getElementById(id);
+  const NS='http://www.w3.org/2000/svg';
+  const make=(tag,attrs,text,parent)=>{const n=document.createElementNS(NS,tag); for(const [k,v] of Object.entries(attrs)) n.setAttribute(k,String(v));if(text!=null)n.textContent=text;(parent||$('grid')).appendChild(n);return n;};
+  const numbers=['co','cr','e0','alpha','k0'];
+  const formatConc=c=>c>=0.001?c.toFixed(3):c>=0.0001?c.toFixed(5):c>=0.00001?c.toFixed(6):c.toExponential(1);
+  const formatRate=k=>k>=0.001?k.toFixed(4):k>=0.0001?k.toFixed(5):k.toExponential(2);
+  const fmtTick=v=>{
+    if(Math.abs(v)<1e-9)return '0';
+    const av=Math.abs(v);
+    return (av>=10?v.toFixed(0):av>=1?v.toFixed(1):v.toFixed(2)).replace(/\.0+$/,'').replace(/(\.\d*?)0+$/,'$1');
+  };
+  function niceStep(raw){
+    const base=Math.pow(10,Math.floor(Math.log10(raw)));
+    return ([1,2,2.5,5,10].find(m=>m*base>=raw)||10)*base;
+  }
+  function update(){
+    const co=Math.pow(10,$('co').valueAsNumber),cr=Math.pow(10,$('cr').valueAsNumber);
+    const e0=$('e0').valueAsNumber,alpha=$('alpha').valueAsNumber,k0=Math.pow(10,$('k0').valueAsNumber);
+    $('co-value').textContent=formatConc(co)+' M';
+    $('cr-value').textContent=formatConc(cr)+' M';
+    $('e0-value').textContent=(e0>0?'+':'')+e0.toFixed(2)+' V';
+    $('alpha-value').textContent=alpha.toFixed(2);
+    $('k0-value').textContent=formatRate(k0)+' cm/s';
+    $('error').textContent='';
+
+    const eeq=e0+(R*T/F)*Math.log(co/cr);
+    const shift=(eeq-e0)*1000;
+    // Formal potential is always at the CENTER; no auto-centering around E_eq.
+    const xmin=e0-0.40, xmax=e0+0.40;
+    const n=360, data=[];
+    function current(E){
+      const v=F*(E-e0)/(R*T);
+      const ic=F*A*k0*(co/1000)*Math.exp(-alpha*v);
+      const ia=F*A*k0*(cr/1000)*Math.exp((1-alpha)*v);
+      return {ic,ia,net:ic-ia};
+    }
+    for(let i=0;i<=n;i++){const E=xmin+(xmax-xmin)*i/n;data.push({E,...current(E)});}
+    const peak=Math.max(...data.flatMap(d=>[Math.abs(d.ic),Math.abs(d.ia),Math.abs(d.net)]));
+    // Fixed absolute current ranges. Changing a concentration or k0 cannot rescale the axes.
+    const fixedRanges=[1,10,100]; // ±1, ±10, ±100 mA (three discrete positions)
+    const scaleIndex=Number($('current-scale').value);
+    const ymax=fixedRanges[scaleIndex];
+    const yStep=ymax/2;
+    const unitScale=1e3,unitName='mA';
+    $('y-axis-title').textContent='전류 (mA)';
+    $('scale-value').textContent='±'+ymax+' mA';
+    // Larger E on the LEFT; lower E on the RIGHT (US electrochemical plotting convention).
+    const x=E=>B.left+(xmax-E)/(xmax-xmin)*B.width;
+    const y=I=>B.top+(ymax-I*unitScale)/(2*ymax)*B.height;
+    const g=$('grid'),a=$('annotations');g.replaceChildren();a.replaceChildren();
+    for(let i=-2;i<=2;i++){
+      const v=yStep*i;
+      make('line',{x1:B.left,y1:y(v/unitScale),x2:B.right,y2:y(v/unitScale),stroke:i===0?'#91a3a8':'#e7eeef','stroke-width':i===0?2:1},null,g);
+      make('text',{x:B.left-12,y:y(v/unitScale)+5,'text-anchor':'end','class':'axis-text'},fmtTick(v),g);
+    }
+    const xStep=0.10; // constant 0.10-V divisions around E0'
+    for(let tick=Math.ceil((xmin-1e-10)/xStep);tick*xStep<=xmax+1e-10;tick++){
+      const val=tick*xStep,px=x(val);
+      make('line',{x1:px,y1:B.top,x2:px,y2:B.bottom,stroke:'#e7eeef','stroke-width':1},null,g);
+      make('text',{x:px,y:B.bottom+24,'text-anchor':'middle','class':'axis-text'},Math.abs(val)<1e-9?'0':val.toFixed(2),g);
+    }
+    function draw(key,val){$(key+'-line').setAttribute('d',data.map((d,j)=>(j?'L':'M')+x(d.E).toFixed(2)+' '+y(val(d)).toFixed(2)).join(' '));}
+    draw('cath',d=>d.ic);draw('anod',d=>-d.ia);draw('net',d=>d.net);
+    $('eq-line').setAttribute('d',`M${x(eeq)} ${B.top} V${B.bottom}`);
+    $('formal-line').setAttribute('d',`M${x(e0)} ${B.top} V${B.bottom}`);
+    $('eq-point').setAttribute('cx',x(eeq));$('eq-point').setAttribute('cy',y(0));
+    const same=Math.abs(e0-eeq)<0.012;
+    const eLab=x(eeq),fLab=x(e0);
+    make('text',{x:Math.min(Math.max(eLab,B.left+40),B.right-40),y:30,'text-anchor':'middle',fill:'#187e62','font-family':'system-ui,sans-serif','font-weight':700,'font-size':16},'Eeq',a);
+    if(!same)make('text',{x:Math.min(Math.max(fLab,B.left+44),B.right-42),y:46,'text-anchor':'middle',fill:'#65777e','font-family':'system-ui,sans-serif','font-weight':650,'font-size':14},'E°′',a);
+    $('formal').textContent=e0.toFixed(4);
+    $('equilibrium').textContent=eeq.toFixed(4);
+    $('shift').textContent=(Math.abs(shift)<0.05?'0.0':(shift>0?'+':'')+shift.toFixed(1));
+    $('substitution').textContent=`= ${e0.toFixed(3)} + 0.025693 × ln(${co.toPrecision(3)}/${cr.toPrecision(3)}) = ${eeq.toFixed(4)} V`;
+    window.__equilibriumDemo={co,cr,e0,alpha,k0,eeq,shift,peak,unitName,scaleIndex,ymax,xmin,xmax,netAtEq:current(eeq).net,xPositiveAtLeft:x(xmax)<x(xmin),x0:x(e0),xeq:x(eeq)};
+  }
+  [...numbers,'current-scale'].forEach(id=>$(id).addEventListener('input',update));
+  update();
+})();
+</script>
+</body>
+</html>
