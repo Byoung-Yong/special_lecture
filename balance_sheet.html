@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Balance Sheet — Migration and Diffusion (v17)</title>
+<style>
+:root{--ink:#263845;--blue:#166da5;--orange:#b67627;--teal:#09847e;--line:#d2dde4;--bg:#f4f7f9}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,"Apple SD Gothic Neo","Malgun Gothic",sans-serif}main{max-width:1460px;margin:auto;padding:18px 24px 28px}
+h1{font-size:25px;line-height:1.25;margin:0 0 14px;font-weight:750;letter-spacing:-.04em}
+.step-tabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;margin-bottom:12px}
+.step-tabs button{border:1px solid #cddae3;border-radius:5px;min-height:42px;font-size:14px;font-weight:690;color:#466176;background:#fff;cursor:pointer}
+.step-tabs button[aria-current=step]{background:#e5f3fa;color:#075d83;border-color:#67a3bd}
+.step-tabs button:focus-visible{outline:3px solid #7aafd1;outline-offset:2px}
+.card{border:1px solid var(--line);border-radius:5px;background:#fff;overflow:hidden}
+.diagram{display:block;width:100%;height:auto}
+.diagram text{font-family:Arial,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;paint-order:stroke;stroke:white;stroke-width:1.9px;stroke-linejoin:round}
+.diagram .chem{font-family:Georgia,"Times New Roman",serif;font-weight:650}
+.diagram .wire{stroke:#2e414c;stroke-width:3.0;fill:none}
+.diagram .flow{fill:none;stroke-width:3.3;stroke-linecap:round;stroke-linejoin:round}
+.diagram .dash{stroke-dasharray:10 8}
+.diagram [data-group]{transition:opacity .16s ease}
+.diagram [data-group].dimmed{opacity:.11}
+.diagram .active .dash{animation:dashmove 1.4s linear infinite}
+@keyframes dashmove{to{stroke-dashoffset:-36}}
+@media(max-width:650px){main{padding:10px}h1{font-size:21px}.step-tabs button{font-size:11px;padding:5px 0}}
+@media(prefers-reduced-motion:reduce){.diagram [data-group]{transition:none}.diagram .active .dash{animation:none}}
+@media print{body{background:#fff}main{padding:0}.step-tabs{display:none}.card{border:0}}
+/* Supporting-electrolyte control: one quiet strip immediately below the SVG. */.support-panel{border-top:1px solid #dce5eb;padding:15px 22px 12px;background:#fff;display:grid;grid-template-columns:minmax(240px,1.05fr) minmax(300px,1.3fr);column-gap:26px;row-gap:8px;align-items:center}
+.support-heading{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:9px}
+.support-heading label{font-size:15px;font-weight:740;color:var(--ink)}
+.support-heading output{font-size:20px;font-weight:760;font-variant-numeric:tabular-nums;color:#136b83;white-space:nowrap}
+#supportSlider{width:100%;margin:0;cursor:pointer;accent-color:#137e9d;min-height:25px}
+#supportSlider:focus-visible{outline:3px solid #79b4e1;outline-offset:3px}
+.scale-ends{display:flex;justify-content:space-between;font-size:12px;color:#647b8a}
+.transference-label{font-size:13px;font-weight:700;color:#435866;margin-bottom:8px}
+.calc-values{font-family:Georgia,"Times New Roman",serif;color:#263744;font-variant-numeric:tabular-nums}
+.calc-denom{font-size:14px;line-height:1.6;margin:0 0 9px;overflow-wrap:anywhere}
+.calc-denom strong{font-size:16px;font-weight:700;white-space:nowrap}
+.calc-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px 12px}
+.calc-row{display:flex;align-items:baseline;flex-wrap:wrap;column-gap:7px;row-gap:2px;border-left:3px solid #a5adb4;padding:4px 6px 4px 10px;min-width:0}
+.calc-row[data-ion="H"]{border-color:#1573a8}
+.calc-row[data-ion="Cl"]{border-color:#b47a30}
+.calc-row[data-ion="K"],.calc-row[data-ion="N"]{border-color:#0b837b}
+.calc-name{font:700 15px/1.4 Georgia,"Times New Roman",serif;white-space:nowrap;min-width:38px}
+.calc-equation{font-size:14px;line-height:1.5;overflow-wrap:anywhere}
+.calc-result{font:bold 17px/1.4 system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;white-space:nowrap;color:#243746}
+@media(max-width:1010px){.support-panel{grid-template-columns:1fr;gap:16px;padding:14px 16px}}
+@media(max-width:620px){.calc-list{grid-template-columns:1fr}.calc-denom{font-size:13px}.calc-equation{font-size:14px}}
+@media print{.support-panel{break-inside:avoid}}
+
+</style></head><body><main>
+<h1>Balance sheet — 전극 반응과 물질전달</h1>
+<nav class="step-tabs" aria-label="과정 선택">
+  <button type="button" data-step="0" aria-current="step">전체</button>
+  <button type="button" data-step="1">전극 반응</button>
+  <button type="button" data-step="2">Diffusion</button>
+  <button type="button" data-step="3">Migration</button>
+  <button type="button" data-step="4">Balance sheet</button>
+</nav>
+<section class="card">
+<svg class="diagram" viewBox="0 0 1200 795" role="img" xmlns="http://www.w3.org/2000/svg" aria-labelledby="figuretitle figuredesc">
+<title id="figuretitle">HCl 및 KNO3 전해질의 혼합 물질전달 개념적 balance sheet</title>
+<desc id="figuredesc">좌측 Pt 음극과 우측 Pt 양극의 반응을 나타낸다. 같은 용액 속에서 migration과 diffusion이 동시에 일어나며, 음극 H+와 양극 Cl-에 대해 두 기여의 합이 전극 반응에 필요한 10에 해당한다. 숫자는 KNO3 농도에 따라 변경되는 전도도 기반 분담의 개념적 근사이다.</desc>
+<defs>
+  <marker id="mkBlack" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="7" markerHeight="7" orient="auto"><path d="M1 1 L11 6 L1 11 Z" fill="#2b3e4a"/></marker>
+  <marker id="mkBlue" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="7" markerHeight="7" orient="auto"><path d="M1 1 L11 6 L1 11 Z" fill="#1573a8"/></marker>
+  <marker id="mkOrange" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="7" markerHeight="7" orient="auto"><path d="M1 1 L11 6 L1 11 Z" fill="#b47a30"/></marker>
+  <marker id="mkTeal" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="7" markerHeight="7" orient="auto"><path d="M1 1 L11 6 L1 11 Z" fill="#09847e"/></marker>
+</defs>
+<!-- Continuous solution; no spatial partition between migration and diffusion -->
+<rect x="250" y="230" width="700" height="542" fill="#f8fbfc" stroke="#e2e9ec" stroke-width="1"/>
+<!-- Power supply and metal electrodes -->
+<path class="wire" d="M250 230 V64 H518 M680 64 H950 V230"/>
+<rect x="518" y="29" width="162" height="68" rx="2" fill="white" stroke="#2b3e4a" stroke-width="3"/>
+<text x="599" y="73" text-anchor="middle" class="chem" font-size="40" fill="#263844">PS</text>
+<path d="M644 123 H555" class="flow" stroke="#2b3e4a" marker-end="url(#mkBlack)"/>
+<text x="600" y="157" text-anchor="middle" class="chem" font-size="30" fill="#2b3e4a">10 e⁻</text>
+<line x1="250" y1="230" x2="250" y2="772" stroke="#2b3e4a" stroke-width="7"/>
+<line x1="950" y1="230" x2="950" y2="772" stroke="#2b3e4a" stroke-width="7"/>
+<text x="241" y="200" text-anchor="end" font-size="23" font-weight="700">Pt electrode</text>
+<text x="959" y="200" text-anchor="start" font-size="23" font-weight="700">Pt electrode</text>
+<circle cx="200" cy="254" r="23" stroke="#2b3e4a" stroke-width="3" fill="white"/>
+<path d="M186 254 H214" stroke="#2b3e4a" stroke-width="3.8"/>
+<circle cx="1000" cy="254" r="23" stroke="#2b3e4a" stroke-width="3" fill="white"/>
+<path d="M986 254 H1014 M1000 240 V268" stroke="#2b3e4a" stroke-width="3.8"/>
+<text x="600" y="263" text-anchor="middle" class="chem" fill="#263844" font-size="28">HCl (10⁻³ M)</text>
+<text id="saltOnDiagram" x="600" y="293" text-anchor="middle" class="chem" fill="#263844" font-size="28">KNO₃ (0.100 M)</text>
+<g data-group="reaction">
+  <text x="236" y="337" text-anchor="end" class="chem" font-size="25">10H⁺ + 10e⁻ → 5H₂</text>
+  <text x="964" y="337" text-anchor="start" class="chem" font-size="25">10Cl⁻ → 5Cl₂ + 10e⁻</text>
+  <!-- Inline electrode-reaction arrows: electron / reactant meet at the Pt interface. -->
+  <text x="177" y="384" text-anchor="end" class="chem" font-size="26">10 e⁻</text>
+  <path d="M191 376 H240" class="flow" stroke="#2b3e4a" marker-end="url(#mkBlack)"/>
+  <path d="M306 376 H260" class="flow" stroke="#1573a8" marker-end="url(#mkBlue)"/>
+  <text x="320" y="384" text-anchor="start" class="chem" font-size="26" fill="#1573a8">10 H⁺</text>
+  <text x="861" y="384" text-anchor="end" class="chem" font-size="26" fill="#b47a30">10 Cl⁻</text>
+  <path d="M875 376 H939" class="flow" stroke="#b47a30" marker-end="url(#mkOrange)"/>
+  <path d="M962 376 H1012" class="flow" stroke="#2b3e4a" marker-end="url(#mkBlack)"/>
+  <text x="1026" y="384" text-anchor="start" class="chem" font-size="26">10 e⁻</text>
+</g>
+<!-- Migration is displayed in the very same solution as diffusion. -->
+<g data-group="migration">
+  <text x="600" y="423" text-anchor="middle" font-size="24" font-weight="700" fill="#0a756f">Migration</text>
+  <text id="flowHLabel" x="600" y="448" text-anchor="middle" class="chem" font-size="23" fill="#1573a8">H⁺ 0.23</text>
+  <path id="flowH" d="M944 462 H256" class="flow dash" stroke="#1573a8" marker-end="url(#mkBlue)"/>
+  <text id="flowKLabel" x="600" y="492" text-anchor="middle" class="chem" font-size="23" fill="#09847e">K⁺ 4.92</text>
+  <path id="flowK" d="M944 505 H256" class="flow dash" stroke="#09847e" marker-end="url(#mkTeal)"/>
+  <text id="flowClLabel" x="600" y="537" text-anchor="middle" class="chem" font-size="23" fill="#b47a30">Cl⁻ 0.05</text>
+  <path id="flowCl" d="M256 548 H944" class="flow dash" stroke="#b47a30" marker-end="url(#mkOrange)"/>
+  <text id="flowNLabel" x="600" y="580" text-anchor="middle" class="chem" font-size="23" fill="#09847e">NO₃⁻ 4.79</text>
+  <path id="flowN" d="M256 592 H944" class="flow dash" stroke="#09847e" marker-end="url(#mkTeal)"/>
+</g>
+<g data-group="diffusion">
+  <text x="368" y="625" text-anchor="middle" font-size="23" font-weight="700" fill="#1573a8">Diffusion</text>
+  <text x="832" y="625" text-anchor="middle" font-size="23" font-weight="700" fill="#b47a30">Diffusion</text>
+  <!-- Cathode H+ is consumed, Cl- net flux across electrode is zero. -->
+  <text id="dHLabel" x="367" y="652" text-anchor="middle" class="chem" font-size="25" fill="#1573a8">H⁺ 9.77</text>
+  <path d="M440 667 H262" class="flow" stroke="#1573a8" marker-end="url(#mkBlue)"/>
+  <text id="dClCathLabel" x="367" y="701" text-anchor="middle" class="chem" font-size="24" fill="#b47a30">Cl⁻ 0.05</text>
+  <path d="M440 713 H262" class="flow" stroke="#b47a30" marker-end="url(#mkOrange)"/>
+  <!-- Anode Cl- is consumed, H+ net flux across electrode is zero. -->
+  <text id="dClLabel" x="833" y="652" text-anchor="middle" class="chem" font-size="25" fill="#b47a30">Cl⁻ 9.95</text>
+  <path d="M762 667 H937" class="flow" stroke="#b47a30" marker-end="url(#mkOrange)"/>
+  <text id="dHAnLabel" x="833" y="701" text-anchor="middle" class="chem" font-size="24" fill="#1573a8">H⁺ 0.23</text>
+  <path d="M762 713 H937" class="flow" stroke="#1573a8" marker-end="url(#mkBlue)"/>
+</g>
+<g data-group="balance">
+  <text id="totalH" x="372" y="755" text-anchor="middle" class="chem" fill="#126e9a" font-size="23">H⁺: 0.23 + 9.77 = 10</text>
+  <text id="totalCl" x="828" y="755" text-anchor="middle" class="chem" fill="#a46724" font-size="23">Cl⁻: 0.05 + 9.95 = 10</text>
+</g>
+</svg>
+  <div class="support-panel" aria-label="Supporting electrolyte 농도와 전달 수 계산">
+    <div class="support-control">
+      <div class="support-heading">
+        <label for="supportSlider">KNO₃ 농도</label>
+        <output id="supportValue" for="supportSlider">0.100 M</output>
+      </div>
+      <input id="supportSlider" type="range" min="0" max="11" step="1" value="0" aria-label="KNO3 농도 선택">
+      <div class="scale-ends"><span>0 M</span><span>0.200 M</span></div>
+    </div>
+    <div class="support-readout">
+      <div class="transference-label">Transference number, tᵢ <span style="font-weight:400;color:#758794">(전류 분담률)</span></div>
+      <div class="calc-values" aria-live="polite" aria-atomic="true">
+        <div class="calc-denom">
+          Σ(c<sub>j</sub>λ<sub>j</sub>⁰) =
+          <span id="denTerms">(0.001×349.8) + (0.001×76.3) + (0.100×73.5) + (0.100×71.5)</span>
+          = <strong id="denValue">14.9261</strong>
+        </div>
+        <div class="calc-list">
+          <div class="calc-row" data-ion="H"><span class="calc-name">t<sub>H⁺</sub> =</span><span id="calcH" class="calc-equation">(0.001×349.8) / 14.9261 = 0.02344</span><strong id="tH" class="calc-result">2.34%</strong></div>
+          <div class="calc-row" data-ion="Cl"><span class="calc-name">t<sub>Cl⁻</sub> =</span><span id="calcCl" class="calc-equation">(0.001×76.3) / 14.9261 = 0.00511</span><strong id="tCl" class="calc-result">0.51%</strong></div>
+          <div class="calc-row" data-ion="K"><span class="calc-name">t<sub>K⁺</sub> =</span><span id="calcK" class="calc-equation">(0.100×73.5) / 14.9261 = 0.49243</span><strong id="tK" class="calc-result">49.24%</strong></div>
+          <div class="calc-row" data-ion="N"><span class="calc-name">t<sub>NO₃⁻</sub> =</span><span id="calcN" class="calc-equation">(0.100×71.5) / 14.9261 = 0.47903</span><strong id="tN" class="calc-result">47.90%</strong></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section></main>
+<script>
+(()=>{
+'use strict';
+const q=(s)=>document.querySelector(s), all=(s)=>[...document.querySelectorAll(s)];
+const stages=[null,'reaction','diffusion','migration','balance'];
+function render(stage){
+  const target=stages[stage];
+  all('[data-step]').forEach(b=>{
+    if(Number(b.dataset.step)===stage)b.setAttribute('aria-current','step');
+    else b.removeAttribute('aria-current');
+  });
+  all('[data-group]').forEach(g=>{
+    const n=g.dataset.group;
+    const showAll=stage===0||stage===4;
+    g.classList.toggle('dimmed',!showAll&&n!==target);
+    g.classList.toggle('active',showAll||n===target);
+  });
+}
+all('[data-step]').forEach(b=>b.addEventListener('click',()=>render(Number(b.dataset.step))));
+const LAMBDA=Object.freeze({H:349.8,Cl:76.3,K:73.5,N:71.5});
+const SUPPORT_VALUES=Object.freeze([0,0.0001,0.0005,0.001,0.002,0.005,0.010,0.020,0.050,0.100,0.150,0.200]);
+const fmtM=m=>m===0?'0 M':m<0.001?m.toFixed(4)+' M':m.toFixed(3)+' M';
+function update(){
+  const idx=Math.max(0,Math.min(SUPPORT_VALUES.length-1,Number(q('#supportSlider').value)));
+  const m=SUPPORT_VALUES[idx];
+  const c={H:0.001,Cl:0.001,K:m,N:m};
+  const a={};let denom=0;
+  for(const ion of ['H','Cl','K','N']){a[ion]=c[ion]*LAMBDA[ion];denom+=a[ion]}
+  const t={};for(const ion of ['H','Cl','K','N'])t[ion]=a[ion]/denom;
+  const display=fmtM(m);const mc=m>0&&m<0.001?m.toFixed(4):m.toFixed(3);
+  q('#supportValue').textContent=display;q('#saltOnDiagram').textContent='KNO₃ ('+display+')';
+  q('#denTerms').textContent='(0.001×349.8) + (0.001×76.3) + ('+mc+'×73.5) + ('+mc+'×71.5)';
+  q('#denValue').textContent=denom.toFixed(4);
+  const lbl={H:'H⁺',Cl:'Cl⁻',K:'K⁺',N:'NO₃⁻'};
+  for(const ion of ['H','Cl','K','N']){
+    q('#calc'+ion).textContent='('+((ion==='H'||ion==='Cl')?'0.001':mc)+'×'+LAMBDA[ion].toFixed(1)+') / '+denom.toFixed(4)+' = '+t[ion].toFixed(5);
+    q('#t'+ion).textContent=(100*t[ion]).toFixed(2)+'%';
+    q('#flow'+ion+'Label').textContent=lbl[ion]+' '+(10*t[ion]).toFixed(2);
+    q('#flow'+ion).style.opacity=t[ion]<1e-10?'0.12':String(Math.min(1,0.32+1.45*t[ion]));
+  }
+  const migH=10*t.H,migCl=10*t.Cl;
+  // At the reactive electrode: net reactant supply must equal 10.
+  q('#dHLabel').textContent='H⁺ '+(10-migH).toFixed(2);
+  q('#dClLabel').textContent='Cl⁻ '+(10-migCl).toFixed(2);
+  // Nonreacting opposite ion: its surface net flux is zero (opposing components).
+  q('#dClCathLabel').textContent='Cl⁻ '+migCl.toFixed(2);
+  q('#dHAnLabel').textContent='H⁺ '+migH.toFixed(2);
+  q('#totalH').textContent='H⁺: '+migH.toFixed(2)+' + '+(10-migH).toFixed(2)+' = 10';
+  q('#totalCl').textContent='Cl⁻: '+migCl.toFixed(2)+' + '+(10-migCl).toFixed(2)+' = 10';
+}
+q('#supportSlider').addEventListener('input',update);
+update();render(0);
+})();
+</script></body></html>

@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Charge_transfer_energy_v16</title>
+<style>
+:root{--blue:#0785c8;--orange:#ee8b34;--focus:#d52562;--ink:#161a1d;--line:#dce3e6;--rate:#12834c;--barrier:#3178b4;--voltage:#bb353b}
+*{box-sizing:border-box}
+html,body{width:100%;height:100%;margin:0;background:white;color:var(--ink)}
+body{display:grid;place-items:center;font-family:Georgia,'Times New Roman',serif}
+.sheet{width:min(100vw,calc(100dvh * 4 / 3));height:min(100dvh,75vw);aspect-ratio:4/3;background:#fff;display:grid;grid-template-rows:68% 32%;overflow:hidden}
+.chart-row{display:flex;min-height:0;padding:10px 15px 2px 8px;gap:5px}
+.chart{flex:1;min-width:0;min-height:0;display:flex;align-items:center}
+#plot{width:100%;height:100%;display:block}
+.controls{display:flex;flex:none;gap:4px;height:72%;align-self:center;align-items:stretch}
+.control{width:57px;display:flex;align-items:center;flex-direction:column;gap:8px;min-height:0}
+.control label{font-style:italic;font-size:clamp(18px,2.2vw,30px)}
+.control output{font-size:clamp(11px,1.25vw,17px);white-space:nowrap;font-variant-numeric:tabular-nums}
+.control input[type=range]{writing-mode:vertical-lr;direction:rtl;appearance:slider-vertical;flex:1;width:35px;min-height:0;accent-color:var(--blue);cursor:pointer}
+.equations{border-top:1px solid #d7e1e4;display:grid;grid-template-rows:auto auto 1fr;min-height:0;padding:10px 23px 12px 25px;gap:2px}
+.pair{min-height:0;display:grid;grid-template-columns:36% 64%;gap:13px;align-items:start}
+.reactions{display:flex;flex-direction:column;gap:clamp(4px, .65vw, 10px);align-items:flex-start}
+.eq,.reaction{font-size:clamp(17px,2.0vw,29px);line-height:1.34;white-space:nowrap}
+.reaction{display:flex;align-items:center;gap:11px;margin-bottom:5px}
+.arrow-stack{display:inline-flex;flex-direction:column;align-items:center;gap:0;vertical-align:middle;font-size:.65em;line-height:1}
+.arrow-stack .arrows{letter-spacing:-.05em;font-size:1.3em;white-space:nowrap}
+.arrow-stack .arrows span{display:block;line-height:.61}
+.barrier-eqs{display:flex;flex-direction:column;gap:clamp(12px,1.65vw,25px);padding-left:8px;align-items:flex-start}
+.term{background:transparent;border:0;border-radius:3px;color:inherit;padding:1px 3px;line-height:inherit;font:inherit;cursor:pointer;white-space:nowrap;transition:background .14s,box-shadow .14s}
+.term:hover{background:#edf4f7}
+.term:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.term.active{background:#fff1f5;box-shadow:inset 0 -3px 0 var(--focus)}
+.term.rate{color:var(--rate)}.term.barrier{color:var(--barrier)}.term.voltage{color:var(--voltage)}
+sup,sub{font-size:.62em;line-height:0;position:relative;vertical-align:baseline}
+sup{top:-.65em}sub{top:.32em}
+.ko{font-family:system-ui,sans-serif;font-size:.72em}
+.kzero{font-size:clamp(17px,2.0vw,29px);white-space:nowrap;text-align:center;padding:5px 0 1px;border-top:1px solid var(--line);margin-top:12px;line-height:1.45}
+.frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;font-size:.79em;line-height:1.12;margin:0 1px}
+.frac .num{border-bottom:1.4px solid currentColor;padding:0 3px 2px}
+.frac .den{padding:2px 3px 0}
+.status{min-height:24px;color:#47545c;font-family:system-ui,-apple-system,sans-serif;font-size:clamp(11px,1.1vw,15px);line-height:1.35;white-space:normal;text-align:center}
+@media(max-width:850px){.chart-row{padding:2px 6px}.control{width:38px;gap:3px}.control input[type=range]{width:24px}.controls{height:76%;gap:1px}.equations{padding:6px 12px;gap:0}.pair{gap:5px;grid-template-columns:37% 63%}.reactions{gap:5px}.barrier-eqs{gap:9px;padding:0}.reaction{gap:3px;margin-bottom:3px}.eq,.reaction{font-size:clamp(12px,2.12vw,19px)}.kzero{font-size:clamp(12px,2.05vw,19px)}.status{font-size:10px;min-height:18px}}
+@media(prefers-reduced-motion:reduce){.term{transition:none}}
+
+/* Keep the 4:3 page and the original energy diagram visible while reading equations. */
+.sheet{grid-template-rows:59% 41%}
+.equations{display:flex;flex-direction:column;gap:8px;overflow-y:auto;overflow-x:hidden;scrollbar-gutter:stable;overscroll-behavior:contain}
+.pair,.kzero,.currents,.status{flex-shrink:0}
+.currents{border-top:1px solid var(--line);padding-top:10px;display:flex;flex-direction:column;gap:7px}
+.currents .current-title{font:600 clamp(12px,1.25vw,17px)/1.35 system-ui,-apple-system,sans-serif;color:#3d4850}
+.current-partials{display:grid;grid-template-columns:1fr 1fr;align-items:start;gap:5px 14px}
+.current-partials .eq{font-size:clamp(15px,1.82vw,25px)}
+.current-line{white-space:nowrap}
+.net-head{display:flex;align-items:center;gap:14px;flex-wrap:wrap;font-size:clamp(16px,1.8vw,26px);border-top:1px solid #edf1f3;padding-top:8px}
+.net-head .label{font:600 clamp(12px,1.18vw,17px) system-ui,-apple-system,sans-serif}
+.net-head .translation{font-weight:400;color:#31859c}
+.net-equation{display:flex;align-items:center;gap:2px;font-size:clamp(14px,1.53vw,22px);white-space:nowrap;line-height:1.36;padding:4px 2px 6px}
+.net-factors{display:flex;flex-direction:column;gap:4px;flex:0 1 auto;min-width:0}
+.net-bracket{font-size:3.3em;font-weight:300;line-height:1;align-self:stretch;display:flex;align-items:center}
+.net-equation .frac{font-size:.76em}
+.net-equation .term{padding:1px 2px}
+.net-row{white-space:nowrap}
+.net-prefix{display:flex;align-items:center;gap:1px;align-self:flex-start;margin-top:5px}
+@media(max-width:850px){
+ .sheet{grid-template-rows:57% 43%}
+ .currents{gap:5px;padding-top:7px}
+ .current-partials{gap:2px 4px}
+ .current-partials .eq{font-size:clamp(12px,1.9vw,16px)}
+ .net-head{padding-top:6px;gap:6px}
+ .net-equation{font-size:clamp(10px,1.55vw,15px);padding:1px 0 5px;gap:1px}
+ .net-equation .frac{font-size:.82em}
+ .net-bracket{font-size:3em}
+}
+/* One continuous line for the final net-current equation only. */
+.net-factors{flex-direction:row;align-items:center;gap:8px;flex-shrink:0}
+.net-equation{font-size:clamp(14px,1.9vw,26px);gap:2px;width:max-content;max-width:100%;}
+.net-equation .net-prefix{align-self:center;margin-top:0;flex-shrink:0}
+.net-equation .net-bracket{font-size:2.7em;align-self:center;flex-shrink:0}
+.net-equation .net-row{flex-shrink:0}
+@media(max-width:850px){.net-equation{font-size:clamp(11px,1.9vw,16px)}.net-factors{gap:3px}}
+/* Mathematical typesetting for the lower equation area only. */
+.equations{font-family:"Cambria Math","STIX Two Math","Asana Math","DejaVu Serif",serif}
+/* Let the equation area expand naturally instead of scrolling inside the 4:3 sheet. */
+body{display:block}
+.sheet{height:auto;aspect-ratio:auto;display:block;overflow:visible;margin-inline:auto}
+.chart-row{height:min(59dvh,44.25vw)}
+.equations{height:auto;min-height:0;overflow:visible;scrollbar-gutter:auto;overscroll-behavior:auto}
+@media(max-width:850px){.chart-row{height:min(57dvh,42.75vw)}}
+</style>
+</head>
+<body>
+<main class="sheet">
+  <div class="chart-row">
+    <div class="chart"><svg id="plot" viewBox="0 0 1890 900" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="전위에 따른 반응물과 생성물의 에너지, 전이상태, 활성화 자유에너지 및 전위 변화 에너지">
+ <defs>
+  <marker id="focusArrow" viewBox="0 0 10 10" markerWidth="6" markerHeight="6" refX="8.4" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#e42f66"/></marker>
+  <marker id="arrow" viewBox="0 0 10 10" markerWidth="7" markerHeight="7" refX="8.2" refY="5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10Z" fill="#282828"/></marker>
+ </defs>
+ <g fill="none" stroke-linejoin="miter">
+  <path d="M78 790 V70 L69 89 M78 70 L87 89 M78 790 H1820 L1800 781 M1820 790 L1800 799" stroke="#121212" stroke-width="3"/>
+  <path id="refTsGuide" d="M155 265 H1725" stroke="#a8a8a8" stroke-width="2.2" stroke-dasharray="10 10"/>
+  <path id="refBlueGuide" d="M155 490 H790" stroke="#aaa" stroke-width="2.2" stroke-dasharray="10 10"/>
+  <path id="currTsGuide" stroke="#adadad" stroke-width="2.2" stroke-dasharray="10 10"/>
+  <path id="currBlueGuide" stroke="#ababab" stroke-width="2.2" stroke-dasharray="10 10"/>
+  <path id="blueHypGuide" stroke="#a3a3a3" stroke-width="2.2" stroke-dasharray="10 10"/>
+  <path id="transitionGuide" stroke="#9a9a9a" stroke-width="2.2" stroke-dasharray="8 10"/>
+  <path id="orangeProdGuide" d="M1195 555 H1665" stroke="#aaa" stroke-width="2.2" stroke-dasharray="10 10"/>
+
+  <path id="refBar" d="M470 273 V482" stroke="#222" stroke-width="2.9" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+  <path id="blueBar" stroke="#252525" stroke-width="3" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+  <path id="orangeBar" stroke="#252525" stroke-width="3" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+  <path id="allDelta" stroke="#252525" stroke-width="3" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+  <path id="betaDelta" stroke="#252525" stroke-width="3" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+  <path id="alphaDelta" stroke="#252525" stroke-width="3" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+  <path id="referenceTick" stroke="#333" stroke-width="2.6"/>
+  <path id="allTick" stroke="#333" stroke-width="2.6"/>
+  <path id="betaTick" stroke="#333" stroke-width="2.6"/>
+  <path id="alphaTick" stroke="#333" stroke-width="2.6"/>
+
+  <path id="orangeDashed" stroke="var(--orange)" stroke-width="9" stroke-dasharray="15 12"/>
+  <path id="orangeSolid" stroke="var(--orange)" stroke-width="9"/>
+  <path id="blueSolid" stroke="var(--blue)" stroke-width="9"/>
+  <path id="blueDashed" stroke="var(--blue)" stroke-width="9" stroke-dasharray="15 12"/>
+  <circle id="transition" r="8.5" fill="#151515" stroke="white" stroke-width="1.5"/>
+ </g>
+ <g id="focusOverlay" pointer-events="none"></g>
+ <g font-family="Georgia,'Times New Roman',serif" fill="#141414" style="paint-order:stroke;stroke:white;stroke-width:6px;stroke-linejoin:round">
+  <text transform="rotate(-90 31 443)" x="31" y="443" text-anchor="middle" font-size="40">Free energy</text>
+  <text x="950" y="862" text-anchor="middle" font-size="40">Reaction coordinate</text>
+  <text x="675" y="716" text-anchor="middle" font-size="40">O + ne<tspan baseline-shift="super" font-size="24">−</tspan></text>
+  <text x="1385" y="716" text-anchor="middle" font-size="40">R</text>
+  <text x="340" y="358" font-size="36">ΔG<tspan baseline-shift="super" font-size="23">‡</tspan><tspan baseline-shift="sub" font-size="23">oc,0</tspan></text>
+  <text id="blueBarText" x="520" text-anchor="start" font-size="37">ΔG<tspan baseline-shift="super" font-size="24">‡</tspan><tspan baseline-shift="sub" font-size="24">oc</tspan></text>
+  <text id="orangeBarText" x="1515" font-size="37">ΔG<tspan baseline-shift="super" font-size="24">‡</tspan><tspan baseline-shift="sub" font-size="24">oa</tspan></text>
+  <text id="allText" x="160" font-size="39">nF(E − E°′)</text>
+  <text id="betaText" x="1160" font-size="39">(1−α)nF(E − E°′)</text>
+  <text id="alphaText" x="1100" font-size="39">αnF(E − E°′)</text>
+ </g>
+</svg></div>
+    <div class="controls">
+      <div class="control"><label for="e">E</label><input type="range" id="e" min="-0.4" max="0.4" step="0.005" value="0.15" aria-label="E 전위 조절"><output id="ev">0.150 V</output></div>
+      <div class="control"><label for="alpha">α</label><input type="range" id="alpha" min="0.30" max="0.70" step="0.001" value="0.487" aria-label="알파 조절"><output id="alphav">0.487</output></div>
+    </div>
+  </div>
+  <div class="equations" id="equations">
+    <div class="pair">
+      <div class="reactions">
+        <div class="reaction">
+          <button class="term" type="button" data-key="reactant">O + ne<sup>−</sup></button>
+          <span class="arrow-stack"><button type="button" class="term rate" data-key="kf"><i>k</i><sub>f</sub></button><span class="arrows"><span>⟶</span><span>⟵</span></span><button type="button" class="term rate" data-key="kb"><i>k</i><sub>b</sub></button></span>
+          <button class="term" type="button" data-key="product">R</button>
+        </div>
+        <div class="eq"><button class="term" data-key="vf" type="button"><i>v</i><sub>f</sub></button> = <button class="term rate" data-key="kf" type="button"><i>k</i><sub>f</sub></button><button class="term" data-key="cO" type="button"><i>C</i><sub>O</sub>(0, t)</button></div>
+        <div class="eq"><button class="term" data-key="vb" type="button"><i>v</i><sub>b</sub></button> = <button class="term rate" data-key="kb" type="button"><i>k</i><sub>b</sub></button><button class="term" data-key="cR" type="button"><i>C</i><sub>R</sub>(0, t)</button></div>
+      </div>
+      <div class="barrier-eqs">
+        <div class="eq">
+          <button class="term barrier" data-key="gc" type="button">Δ<i>G</i><sub>c</sub><sup>‡</sup></button>
+          = <button class="term" data-key="gc0" type="button">Δ<i>G</i><sub>oc</sub><sup>‡</sup></button>
+          + <button class="term" data-key="alphaTerm" type="button"><i>αnF</i></button>(<button class="term voltage" data-key="E" type="button"><i>E</i></button> − <button class="term" data-key="E0" type="button"><i>E</i><sup>0′</sup></button>)
+        </div>
+        <div class="eq">
+          <button class="term barrier" data-key="ga" type="button">Δ<i>G</i><sub>a</sub><sup>‡</sup></button>
+          = <button class="term" data-key="ga0" type="button">Δ<i>G</i><sub>oa</sub><sup>‡</sup></button>
+          − <button class="term" data-key="betaTerm" type="button">(1 − <i>α</i>)<i>nF</i></button>(<button class="term voltage" data-key="E" type="button"><i>E</i></button> − <button class="term" data-key="E0" type="button"><i>E</i><sup>0′</sup></button>)
+        </div>
+      </div>
+    </div>
+    <div class="kzero">
+       <button class="term rate" data-key="k0" type="button"><i>k</i><sup>0</sup></button>
+       = <button class="term rate" data-key="kf0" type="button"><i>k</i><sub>f</sub><sup>0</sup></button>
+       exp&nbsp;(&minus; <span class="frac"><span class="num"><button class="term" data-key="gc0" type="button">Δ<i>G</i><sub>oc</sub><sup>‡</sup></button></span><span class="den"><i>RT</i></span></span> )
+       = <button class="term rate" data-key="kb0" type="button"><i>k</i><sub>b</sub><sup>0</sup></button>
+       exp&nbsp;(&minus; <span class="frac"><span class="num"><button class="term" data-key="ga0" type="button">Δ<i>G</i><sub>oa</sub><sup>‡</sup></button></span><span class="den"><i>RT</i></span></span> )
+    </div>
+
+    <section class="currents" aria-label="활성화 에너지와 측정되는 전류">
+      <div class="current-title">활성화 에너지와 측정되는 전류</div>
+      <div class="current-partials">
+        <div class="eq current-line">
+          <button class="term" data-key="ic" type="button"><i>i</i><sub>c</sub></button>
+          = <button class="term" data-key="nFA" type="button"><i>nFA</i></button>
+          <button class="term rate" data-key="kf" type="button"><i>k</i><sub>f</sub></button>
+          <button class="term" data-key="cO" type="button"><i>C</i><sub>O</sub>(0,t)</button>
+        </div>
+        <div class="eq current-line">
+          <button class="term" data-key="ia" type="button"><i>i</i><sub>a</sub></button>
+          = <button class="term" data-key="nFA" type="button"><i>nFA</i></button>
+          <button class="term rate" data-key="kb" type="button"><i>k</i><sub>b</sub></button>
+          <button class="term" data-key="cR" type="button"><i>C</i><sub>R</sub>(0,t)</button>
+        </div>
+      </div>
+      <div class="net-head">
+        <span class="label">유효 전류 <span class="translation">(net current)</span></span>
+        <div class="eq">
+          <button class="term" data-key="inet" type="button"><i>i</i><sub>net</sub></button>
+          = <button class="term" data-key="ic" type="button"><i>i</i><sub>c</sub></button>
+          − <button class="term" data-key="ia" type="button"><i>i</i><sub>a</sub></button>
+        </div>
+      </div>
+      <div class="net-equation" aria-label="i net equals n F A k zero times C O exp minus alpha n F E minus E zero prime over R T minus C R exp one minus alpha times n F E minus E zero prime over R T">
+        <div class="net-prefix">
+          <button class="term" data-key="inet" type="button"><i>i</i><sub>net</sub></button>
+          = <button class="term" data-key="nFA" type="button"><i>nFA</i></button>
+          <button class="term rate" data-key="k0" type="button"><i>k</i><sup>0</sup></button>
+        </div>
+        <span class="net-bracket" aria-hidden="true">[</span>
+        <div class="net-factors">
+          <div class="net-row">
+            <button class="term" data-key="cO" type="button"><i>C</i><sub>O</sub>(0,t)</button>
+            <button class="term" data-key="redExp" type="button">exp</button>
+            (<span class="frac"><span class="num">− <button class="term" data-key="alphaTerm" type="button"><i>αnF</i></button>(<button class="term voltage" data-key="E" type="button"><i>E</i></button> − <button class="term" data-key="E0" type="button"><i>E</i><sup>0′</sup></button>)</span><span class="den"><i>RT</i></span></span>)
+          </div>
+          <div class="net-row">
+            − <button class="term" data-key="cR" type="button"><i>C</i><sub>R</sub>(0,t)</button>
+            <button class="term" data-key="oxExp" type="button">exp</button>
+            (<span class="frac"><span class="num"><button class="term" data-key="betaTerm" type="button">(1 − <i>α</i>)<i>nF</i></button>(<button class="term voltage" data-key="E" type="button"><i>E</i></button> − <button class="term" data-key="E0" type="button"><i>E</i><sup>0′</sup></button>)</span><span class="den"><i>RT</i></span></span>)
+          </div>
+        </div>
+        <span class="net-bracket" aria-hidden="true">]</span>
+      </div>
+    </section>
+    <div class="status" id="status" aria-live="polite">식을 클릭하면 대응하는 부분이 위 도표에 표시됩니다.</div>
+  </div>
+</main>
+<script>
+(() => {
+ 'use strict';
+ const el=id=>document.getElementById(id);
+ const path=(id,d)=>el(id).setAttribute('d',d);
+ const set=(id,k,v)=>el(id).setAttribute(k,String(v));
+ const svgNS='http://www.w3.org/2000/svg';
+ const Eslider=el('e'), aSlider=el('alpha');
+ const TS={x:975,y:265}, blue={flatStart:560,flatY:490}, orange={flatY:555};
+ const totalSlope=(490-265)/(975-795)+(555-265)/(1195-975);
+ const params=new URLSearchParams(window.location.search);
+ if(params.has('E')) Eslider.value=params.get('E');
+ if(params.has('alpha')) aSlider.value=params.get('alpha');
+ let selected=''; let geom=null;
+ const details={
+  reactant:'O + ne⁻: 파란색 반응물 에너지 준위',
+  product:'R: 주황색 생성물 에너지 준위',
+  kf:'k_f: O + ne⁻ → R 방향의 속도상수와 환원 장벽',
+  kb:'k_b: R → O + ne⁻ 방향의 속도상수와 산화 장벽',
+  vf:'v_f: O + ne⁻ → R 방향의 반응속도',
+  vb:'v_b: R → O + ne⁻ 방향의 반응속도',
+  cO:'C_O(0,t): 반응물 O의 전극 표면 농도 — 자유에너지 좌표값은 아님',
+  cR:'C_R(0,t): 생성물 R의 전극 표면 농도 — 자유에너지 좌표값은 아님',
+  gc:'ΔG‡_c: 현재 전위에서 O + ne⁻ → 전이상태의 에너지 장벽',
+  ga:'ΔG‡_a: 현재 전위에서 R → 전이상태의 에너지 장벽',
+  gc0:'ΔG‡_oc: 기준 전위 E°′에서 환원 반응의 활성화 장벽',
+  ga0:'ΔG‡_oa: 기준 전위 E°′에서 산화 반응의 활성화 장벽',
+  alphaTerm:'αnF(E − E°′): 환원 장벽의 기준값 대비 변화량',
+  betaTerm:'(1−α)nF(E − E°′): 산화 장벽의 기준값 대비 변화량',
+  E:'E: 반응물 에너지 준위의 전위 의존적 변화',
+  E0:'E°′: 점선으로 표시된 기준 전위의 에너지 준위',
+  k0:'k⁰: 기준 전위에서 두 반응 방향에 공통으로 연결되는 표준 속도상수',
+  kf0:'k_f⁰: 환원 방향의 전지수 인자 — 에너지 도표에 독립된 좌표는 없음',
+  kb0:'k_b⁰: 산화 방향의 전지수 인자 — 에너지 도표에 독립된 좌표는 없음',
+  ic:'i_c = nFA k_f C_O(0,t): 환원 반응의 부분전류 크기',
+  ia:'i_a = nFA k_b C_R(0,t): 산화 반응의 부분전류 크기',
+  inet:'i_net = i_c − i_a: 환원 전류를 양(+)으로 정의한 순전류',
+  nFA:'nFA: 전자 수 n, 패러데이 상수 F, 전극 면적 A를 이용해 반응속도를 전류로 변환하는 계수 — 에너지 좌표에는 없음',
+  redExp:'환원 전류의 지수 인자: αnF(E − E⁰′)에 따른 환원 장벽 변화를 반영',
+  oxExp:'산화 전류의 지수 인자: (1−α)nF(E − E⁰′)에 따른 산화 장벽 변화를 반영'
+ };
+ function difference(id,tick,x,ya,yb){
+  if(Math.abs(ya-yb)<18){el(id).style.display='none';el(tick).style.display='';path(tick,`M${x-12} ${(ya+yb)/2} H${x+12}`);}
+  else {el(tick).style.display='none';el(id).style.display=''; const lo=Math.min(ya,yb),hi=Math.max(ya,yb);path(id,`M${x} ${lo+8} V${hi-8}`);}
+ }
+ function update(){
+   const E=Number(Eslider.value),alpha=Number(aSlider.value);
+   const blueSlope=alpha*totalSlope, orangeSlope=(1-alpha)*totalSlope;
+   const blueKnee=TS.x-(blue.flatY-TS.y)/blueSlope;
+   const orangeKnee=TS.x+(orange.flatY-TS.y)/orangeSlope;
+   const shift=-300*E;  // physical convention in supplied equations: ΔG‡_c rises with E
+   const blueY=blue.flatY-shift;
+   const crossX=TS.x-shift/(blueSlope+orangeSlope);
+   const crossY=TS.y+orangeSlope*(crossX-TS.x);
+   const hypothetical=TS.y-shift;
+   const blueEndX=TS.x+(TS.y-shift-72)/blueSlope;
+   const orangeStartX=TS.x+(72-TS.y)/orangeSlope;
+   path('blueSolid',`M${blue.flatStart} ${blueY} H${blueKnee} L${crossX} ${crossY}`);
+   path('blueDashed',`M${crossX} ${crossY} L${blueEndX} 72`);
+   path('orangeDashed',`M${orangeStartX} 72 L${crossX} ${crossY}`);
+   path('orangeSolid',`M${crossX} ${crossY} L${orangeKnee} ${orange.flatY} H1490`);
+   set('transition','cx',crossX); set('transition','cy',crossY);
+   const betaX=Math.min(crossX+175,1360);
+   const alphaX=Math.min(crossX+85,betaX-90);
+   const alphaTextX=Math.min(alphaX+42,1190),betaTextX=Math.min(betaX+28,1250);
+   path('currTsGuide',`M155 ${crossY} H1725`);
+   path('currBlueGuide',`M155 ${blueY} H${crossX-55}`);
+   path('blueHypGuide',`M${crossX} ${hypothetical} H${alphaX+55}`);
+   path('transitionGuide',`M${crossX} ${crossY} V${Math.max(hypothetical,crossY)+110}`);
+   path('blueBar',`M635 ${crossY+8} V${blueY-8}`);
+   path('orangeBar',`M1470 ${crossY+8} V${orange.flatY-8}`);
+   difference('allDelta','allTick',325,blue.flatY,blueY);
+   difference('betaDelta','betaTick',betaX,TS.y,crossY);
+   difference('alphaDelta','alphaTick',alphaX,hypothetical,crossY);
+   set('blueBarText','y',(crossY+blueY)/2+12);
+   set('orangeBarText','y',(crossY+orange.flatY)/2+12);
+   set('allText','x',325);
+   set('allText','text-anchor','middle');
+   set('allText','y',Math.max(blue.flatY,blueY)+82);
+   set('betaText','x',betaTextX);
+   set('betaText','y',Math.min(TS.y,crossY)-26);
+   set('alphaText','x',alphaTextX);
+   set('alphaText','y',Math.max(hypothetical,crossY)+44);
+   el('ev').textContent=E.toFixed(3)+' V';
+   el('alphav').textContent=alpha.toFixed(3);
+   geom={E,alpha,blueY,blueKnee,orangeKnee,crossX,crossY,hypothetical,alphaX,betaX,shift,
+       gc:blueY-crossY,ga:orange.flatY-crossY,
+       gcExpected:225+alpha*300*E,gaExpected:290-(1-alpha)*300*E};
+   paintFocus();
+   window.__geometry=geom;
+ }
+ function node(tag,attrs){const e=document.createElementNS(svgNS,tag);for(const [k,v] of Object.entries(attrs))e.setAttribute(k,String(v));return e;}
+ function paintFocus(){
+  const layer=el('focusOverlay'); layer.replaceChildren();
+  if(!selected || !geom)return;
+  const g=geom;
+  const COLOR='#e42f66';
+  function stroke(d,width=17,dash=''){
+   const p=node('path',{d,fill:'none',stroke:COLOR,'stroke-width':width,'stroke-linejoin':'round','stroke-linecap':'round',opacity:.91});
+   if(dash)p.setAttribute('stroke-dasharray',dash);
+   layer.appendChild(p);
+  }
+  function endpoints(x,y1,y2){layer.appendChild(node('circle',{cx:x,cy:y1,r:8,fill:COLOR}));layer.appendChild(node('circle',{cx:x,cy:y2,r:8,fill:COLOR}));}
+  function vertical(x,y1,y2){stroke(`M${x} ${y1} V${y2}`,10);endpoints(x,y1,y2);}
+  function point(x,y){layer.appendChild(node('circle',{cx:x,cy:y,r:15,fill:'#fff',stroke:COLOR,'stroke-width':8}));}
+  const refGc=()=>vertical(470,265,490);
+  const refGa=()=>vertical(1595,265,555);
+  const forward=()=>{stroke(`M${g.blueKnee} ${g.blueY} L${g.crossX} ${g.crossY} L${g.orangeKnee} 555`,13);point(g.crossX,g.crossY);};
+  const backward=forward;
+  switch(selected){
+    case 'reactant': case 'cO': stroke(`M560 ${g.blueY} H${g.blueKnee}`,18);break;
+    case 'product': case 'cR': stroke(`M${g.orangeKnee} 555 H1490`,18);break;
+    case 'kf':case 'vf':case 'ic':case 'redExp':forward();{const p=node('path',{d:'M780 752 H1170',fill:'none',stroke:COLOR,'stroke-width':7,'marker-end':'url(#focusArrow)'});layer.appendChild(p);}break;
+    case 'kb':case 'vb':case 'ia':case 'oxExp':backward();{const p=node('path',{d:'M1170 752 H780',fill:'none',stroke:COLOR,'stroke-width':7,'marker-end':'url(#focusArrow)'});layer.appendChild(p);}break;
+    case 'gc':vertical(635,g.crossY,g.blueY);point(g.crossX,g.crossY);break;
+    case 'ga':vertical(1470,g.crossY,555);point(g.crossX,g.crossY);break;
+    case 'gc0':refGc();break;
+    case 'ga0':refGa();break;
+    case 'alphaTerm':vertical(g.alphaX,g.hypothetical,g.crossY);break;
+    case 'betaTerm':vertical(g.betaX,265,g.crossY);break;
+    case 'E':vertical(325,490,g.blueY);stroke(`M560 ${g.blueY} H${g.blueKnee}`,9);break;
+    case 'E0':stroke('M155 265 H1725',5,'12 12');stroke('M155 490 H790',5,'12 12');break;
+    case 'inet':forward();backward();vertical(635,g.crossY,g.blueY);vertical(1470,g.crossY,555);break;
+    case 'nFA':break;
+    case 'k0':refGc();refGa();break;
+    case 'kf0':refGc();break;
+    case 'kb0':refGa();break;
+  }
+ }
+ function choose(key){selected=selected===key?'':key;
+  for(const b of document.querySelectorAll('.term')){const on=b.dataset.key===selected;b.classList.toggle('active',on);b.setAttribute('aria-pressed',String(on));}
+  el('status').textContent=selected?details[selected]:'식을 클릭하면 대응하는 부분이 위 도표에 표시됩니다.';
+  paintFocus();
+ }
+ el('equations').addEventListener('click',ev=>{const b=ev.target.closest('button[data-key]');if(b)choose(b.dataset.key)});
+ Eslider.addEventListener('input',update);
+ aSlider.addEventListener('input',update);
+ update();
+})();
+</script>
+</body>
+</html>

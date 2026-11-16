@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Migration | 이온 이동 시뮬레이터</title>
+<style>
+:root{--bg:#f4f7fb;--ink:#162336;--muted:#62758c;--line:#d9e2ec;--blue:#2874c7;--red:#e45a48;--teal:#087f78;--panel:#fff}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Noto Sans KR","Malgun Gothic",sans-serif}
+body{padding:24px}main{max-width:1390px;margin:auto}h1{font-size:clamp(26px,2.7vw,35px);line-height:1.2;letter-spacing:-.04em;margin:0;font-weight:780}h1 small{color:var(--muted);font-size:15px;font-weight:500;letter-spacing:0;margin-left:8px}header{display:flex;align-items:end;justify-content:space-between;gap:12px;padding-bottom:19px;border-bottom:1px solid var(--line);margin-bottom:21px}.tag{font-size:13px;color:var(--muted)}
+.layout{display:grid;grid-template-columns:minmax(305px,355px) minmax(0,1fr);gap:20px;align-items:start}.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px}.controls{padding:22px}.controls h2{font-size:15px;letter-spacing:-.01em;font-weight:720;margin:0 0 18px}.field{padding:17px 0;border-top:1px solid #e7edf4}.field:first-of-type{border-top:0;padding-top:1px}.fieldHead{display:flex;justify-content:space-between;align-items:center;gap:7px;margin-bottom:12px}.fieldHead label,.fieldHead .fieldTitle{font-weight:670;font-size:15px}.reading{font-size:14px;font-variant-numeric:tabular-nums;font-weight:650;color:var(--teal)}.hint{font-size:12px;color:var(--muted);line-height:1.5;margin-top:7px}
+.options{display:flex;gap:6px;flex-wrap:nowrap}.options button{min-height:39px;flex:1;min-width:0;padding:0 3px;background:#f5f8fb;border:1px solid #dae4ee;border-radius:7px;color:#33495f;font:650 15px system-ui,sans-serif;cursor:pointer;white-space:nowrap;transition:background .12s,border-color .12s}.options button.selected{color:white;background:var(--blue);border-color:var(--blue)}button:focus-visible,input:focus-visible{outline:3px solid #86bae9;outline-offset:3px}input[type=range]{width:100%;height:25px;accent-color:var(--blue);cursor:pointer;margin:0}.rangeEnds{display:flex;justify-content:space-between;font-size:11px;color:var(--muted)}
+.actions{display:flex;gap:9px;margin-top:17px}.actions button{font:650 14px system-ui,sans-serif;border-radius:7px;border:1px solid #c9d7e6;background:white;color:#264663;padding:11px 14px;cursor:pointer;min-height:43px}.actions button.primary{background:#153c62;color:#fff;border-color:#153c62;flex:1}
+.stage{padding:22px 22px 18px;overflow:hidden}.stageHead{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:9px}.stage h2{font-size:17px;letter-spacing:-.02em;margin:0;font-weight:730}.stageNote{font-size:12px;color:var(--muted);margin-top:5px}.key{display:flex;gap:16px;font-size:13px;color:var(--muted);align-items:center}.key span{white-space:nowrap}.key b{display:inline-block;width:11px;height:11px;border-radius:50%;vertical-align:middle;margin-right:5px}.visual{width:100%;display:block;aspect-ratio:980 / 550}.output{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;border-top:1px solid #e5ebf2;padding-top:17px;margin-top:5px}.meter-label{font-size:14px;color:var(--muted)}.meter{font-weight:760;font-size:clamp(30px,3.5vw,44px);line-height:1.15;letter-spacing:-.035em;color:#154b82;font-variant-numeric:tabular-nums}.measure{min-width:175px}.electric{font-size:14px;color:#33536f}.electric b{color:#132a43;font-variant-numeric:tabular-nums}.barOuter{height:8px;border-radius:5px;background:#e8eff6;overflow:hidden;margin-top:9px;max-width:280px}.barInner{height:100%;width:0;background:#2874c7;transition:width .12s}.law{font-size:14px;color:#51667c;border-top:1px solid #e5ebf2;margin-top:16px;padding-top:14px;line-height:1.6}.law strong{font-weight:720;color:var(--ink)}.mono{font-variant-numeric:tabular-nums}.smallprint{font-size:12px;color:#6a7d8e;margin-top:9px;line-height:1.55}#ionLayer circle,#ionLayer text{pointer-events:none}
+@media(max-width:900px){body{padding:13px}.layout{grid-template-columns:1fr}.controls{padding:16px;display:grid;grid-template-columns:1fr 1fr;column-gap:20px}.controls h2{grid-column:1/-1;margin-bottom:5px}.field:first-of-type{padding-top:17px;border-top:1px solid #e7edf4}.actions{grid-column:1/-1}.stage{padding:15px}header{padding-bottom:14px}}
+@media(max-width:560px){body{padding:9px}.controls{grid-template-columns:1fr}.stageHead{gap:8px}.tag{display:none}.options button{font-size:14px}h1 small{display:block;margin:5px 0 0}.key{font-size:12px}}
+@media(prefers-reduced-motion:reduce){.options button,.barInner{transition:none}}
+</style>
+</head>
+<body>
+<main>
+<header><h1>이온 이동 <small>Migration</small></h1><div class="tag">전기장에 의한 물질 전달 · 강의용 시뮬레이터</div></header>
+<div class="layout">
+  <section class="controls panel" aria-label="시뮬레이션 설정">
+    <h2>조건 설정</h2>
+    <div class="field">
+      <div class="fieldHead"><span class="fieldTitle" id="voltageLabel">전압 V</span><output class="reading" id="voltageOut">1.0 V</output></div>
+      <div class="options" role="group" aria-labelledby="voltageLabel" data-control="V">
+        <button type="button" data-value="0">0</button><button type="button" data-value="0.5">0.5</button><button type="button" data-value="1" class="selected" aria-pressed="true">1</button><button type="button" data-value="1.5">1.5</button><button type="button" data-value="2">2</button>
+      </div>
+    </div>
+    <div class="field">
+      <div class="fieldHead"><label for="count">이온 수 (농도)</label><output class="reading" id="countOut">10개</output></div>
+      <input id="count" type="range" min="0" max="20" step="1" value="10"><div class="rangeEnds"><span>0개</span><span>20개</span></div>
+      <div class="hint">그림 속 이온 1개 = 농도 1 mM로 환산</div>
+    </div>
+    <div class="field">
+      <div class="fieldHead"><span class="fieldTitle" id="chargeLabel">전하수 z</span><output class="reading" id="chargeOut">+1</output></div>
+      <div class="options" role="group" aria-labelledby="chargeLabel" data-control="z">
+        <button type="button" data-value="-2">−2</button><button type="button" data-value="-1">−1</button><button type="button" data-value="0">0</button><button type="button" data-value="1" class="selected" aria-pressed="true">+1</button><button type="button" data-value="2">+2</button>
+      </div>
+    </div>
+    <div class="field">
+      <div class="fieldHead"><label for="mobility">이동도 u</label><output class="reading" id="mobilityOut">3 × 10⁻⁸</output></div>
+      <input id="mobility" type="range" min="0" max="5" step="1" value="3"><div class="rangeEnds"><span>0</span><span>5 × 10⁻⁸</span></div>
+      <div class="hint">단위: m²/(V·s)</div>
+    </div>
+    <div class="field">
+      <div class="fieldHead"><span class="fieldTitle" id="distanceLabel">전극 간 거리 L</span><output class="reading" id="distanceOut">2 cm</output></div>
+      <div class="options" role="group" aria-labelledby="distanceLabel" data-control="L">
+        <button type="button" data-value="1">1</button><button type="button" data-value="2" class="selected" aria-pressed="true">2</button><button type="button" data-value="3">3</button>
+      </div>
+    </div>
+    <div class="actions"><button class="primary" id="toggle" type="button">⏸ 일시정지</button><button id="reset" type="button">↺ 초기화</button></div>
+  </section>
+  <section class="stage panel">
+    <div class="stageHead"><div><h2>전해질 셀</h2><div class="stageNote">전원 오른쪽 (+), 왼쪽 (−) · 전기장은 오른쪽 → 왼쪽</div></div><div class="key" aria-hidden="true"><span><b style="background:#2874c7"></b>양이온</span><span><b style="background:#e45a48"></b>음이온</span><span><b style="background:#79899b"></b>중성</span></div></div>
+    <svg id="cell" class="visual" viewBox="0 0 980 550" role="img" aria-label="전극 거리와 전압, 이온 이동 방향이 변하는 전해질 셀 도식">
+      <defs>
+        <linearGradient id="water" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#eaf5fd"/><stop offset="1" stop-color="#d8eaf8"/></linearGradient>
+        <linearGradient id="metal" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#d39b3b"/><stop offset="0.48" stop-color="#f5d584"/><stop offset="1" stop-color="#b47b2c"/></linearGradient>
+        <marker id="arr" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0 0L7 3L0 6" fill="none" stroke="#637d94" stroke-width="1.5"/></marker>
+        <marker id="ionArr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0 0L6 3L0 6" fill="none" stroke="currentColor" stroke-width="1.3"/></marker>
+      </defs>
+      <rect x="68" y="232" width="844" height="255" rx="5" fill="url(#water)" stroke="#a6bfd4" stroke-width="2"/>
+      <path d="M68 250 Q290 246 490 250 T912 250" fill="none" stroke="#91bbd9" stroke-width="2" opacity=".8"/>
+      <g fill="none" stroke="#354e66" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+        <path id="leftWire" d="M280 244 V128 H462"/>
+        <path id="rightWire" d="M700 244 V128 H499"/>
+      </g>
+      <g aria-label="전원 기호" stroke="#354e66" stroke-width="4"><path d="M462 111V145"/><path d="M499 91V165"/></g>
+      <text x="473" y="71" text-anchor="middle" fill="#334b64" font-size="21" font-weight="700" id="circuitV">1.0 V</text>
+      <text x="445" y="134" text-anchor="end" fill="#2874c7" font-weight="800" font-size="30">−</text>
+      <text x="516" y="134" fill="#e45a48" font-weight="800" font-size="30">+</text>
+      <g id="electrodes">
+        <rect id="leftElectrode" x="262" y="220" width="30" height="222" rx="2" fill="url(#metal)" stroke="#ad7a27"/>
+        <rect id="rightElectrode" x="688" y="220" width="30" height="222" rx="2" fill="url(#metal)" stroke="#ad7a27"/>
+        <g id="leftMark"><circle r="25" fill="#2874c7"/><text text-anchor="middle" dominant-baseline="central" fill="#fff" font-size="28" font-weight="800">−</text></g>
+        <g id="rightMark"><circle r="25" fill="#e45a48"/><text text-anchor="middle" dominant-baseline="central" fill="#fff" font-size="28" font-weight="800">+</text></g>
+      </g>
+      <g id="fieldGroup"><path id="fieldArrow" d="M575 279H405" stroke="#657c93" stroke-width="2" marker-end="url(#arr)"/><text x="490" y="270" text-anchor="middle" fill="#516c86" font-size="18" font-weight="650">E</text></g>
+      <g id="ionLayer"></g>
+      <g id="driftGroup" text-anchor="middle"><text id="driftCaption" x="490" y="459" fill="#2874c7" font-size="19" font-weight="700">양이온 ←</text></g>
+      <g fill="#304f68" font-size="18" text-anchor="middle"><path id="dimLine" d="M270 509H710" fill="none" stroke="#718aa2" stroke-width="1.7"/><path id="tickA" stroke="#718aa2" stroke-width="1.7"/><path id="tickB" stroke="#718aa2" stroke-width="1.7"/><text id="dimLabel" x="490" y="541" font-weight="650">2 cm</text></g>
+    </svg>
+    <div class="output" aria-live="polite">
+      <div class="measure"><div class="meter-label">전류 <span style="font-size:12px">(migration 성분)</span></div><div class="meter"><span id="current">0.145</span> <span style="font-size:23px;font-weight:600">mA</span></div></div>
+      <div><div class="electric">전기장 <b id="fieldValue">0.50 V/cm</b></div><div class="electric" style="margin-top:6px">이온 이동 <b id="directionValue">왼쪽 (−극 방향)</b></div><div class="barOuter"><div class="barInner" id="currentBar"></div></div></div>
+    </div>
+    <div class="law"><strong>전류</strong> &nbsp; I = |z|F A u C (V/L)</div>
+    <div class="smallprint">가정: 이동(migration)만 고려, 균일한 농도와 전기장, 전극 면적 A = 1 cm². 그림의 이온 1개를 1 mM로 대응시켜 전류를 계산합니다. 입자 움직임의 화면 속도는 이해를 위한 확대 표현입니다.</div>
+  </section>
+</div>
+</main>
+<script>
+(()=>{'use strict';
+const F=96485.33212;
+const defaults={V:1,N:10,z:1,u:3,L:2};
+const state={...defaults};
+const $=id=>document.getElementById(id);
+const svgNS='http://www.w3.org/2000/svg';
+let particles=[];let playing=!window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+let lastTime=null;let geom={left:290,right:690,span:400};
+function fmt(n,d=2){return Number(n).toFixed(d)}
+function chargeLabel(){return state.z>0?'+'+state.z:String(state.z).replace('-','−')}
+function setupButtons(){document.querySelectorAll('[data-control]').forEach(group=>{
+   group.addEventListener('click',event=>{
+     const button=event.target.closest('button[data-value]');if(!button)return;
+     const k=group.dataset.control;
+     state[k]=Number(button.dataset.value);
+     updateUI(k==='L');
+   });
+ });}
+function updateButtonGroups(){document.querySelectorAll('[data-control]').forEach(group=>{
+  const k=group.dataset.control;
+  group.querySelectorAll('button').forEach(b=>{const selected=Number(b.dataset.value)===state[k];b.classList.toggle('selected',selected);b.setAttribute('aria-pressed',String(selected));});
+ });}
+function updateGeometry(){
+ // Distances correspond to three *visibly different* physical electrode separations.
+ const span={1:240,2:400,3:570}[state.L];
+ const left=490-span/2,right=490+span/2;geom={left,right,span};
+ $('leftElectrode').setAttribute('x',left-15); $('rightElectrode').setAttribute('x',right-15);
+ $('leftMark').setAttribute('transform',`translate(${left},194)`);
+ $('rightMark').setAttribute('transform',`translate(${right},194)`);
+ $('leftWire').setAttribute('d',`M${left} 220V128H462`);
+ $('rightWire').setAttribute('d',`M${right} 220V128H499`);
+ $('dimLine').setAttribute('d',`M${left} 509H${right}`);
+ $('tickA').setAttribute('d',`M${left} 503V515`);
+ $('tickB').setAttribute('d',`M${right} 503V515`);
+ $('dimLabel').textContent=`${state.L} cm`;
+ $('fieldArrow').setAttribute('d',`M${right-58} 279H${left+60}`);
+}
+function addParticles(){
+ $('ionLayer').replaceChildren();particles=[];
+ for(let i=0;i<state.N;i++){
+  const g=document.createElementNS(svgNS,'g');
+  const circle=document.createElementNS(svgNS,'circle');circle.setAttribute('r','14');circle.setAttribute('stroke-width','1.4');circle.setAttribute('stroke','white');
+  const text=document.createElementNS(svgNS,'text');text.setAttribute('text-anchor','middle');text.setAttribute('dominant-baseline','central');text.setAttribute('font-size','13');text.setAttribute('font-weight','750');text.setAttribute('fill','white');
+  g.append(circle,text);$('ionLayer').append(g);
+  const columns=Math.min(5,Math.max(1,state.N));
+  const rows=Math.ceil(state.N/columns);
+  const row=Math.floor(i/columns),col=i%columns;
+  const frac=(col+0.5)/columns+Math.sin(i*3.1)*0.025/columns;
+  const y=350+(row-(rows-1)/2)*39+Math.sin(i*2.7)*3;
+  particles.push({g,circle,text,frac,y});
+ }
+ updateParticleLooks();
+}
+function updateParticleLooks(){
+ const color=state.z>0?'#2874c7':state.z<0?'#e45a48':'#7b899b';
+ const char=state.z===0?'0':Math.abs(state.z)+(state.z>0?'+':'−');
+ for(const p of particles){p.circle.setAttribute('fill',color);p.text.textContent=char;}
+}
+function updatePositions(){
+ const pad=28;
+ for(const p of particles){
+  const x=geom.left+pad+p.frac*(geom.span-pad*2);
+  p.g.setAttribute('transform',`translate(${x.toFixed(2)},${p.y.toFixed(2)})`);
+ }
+}
+function calculate(){
+ const c_mol_m3=state.N;   // 1 visible ion = 1 mM = 1 mol/m3 (explicit teaching model)
+ const u_m2_vs=state.u*1e-8;
+ const A_m2=1e-4;         // fixed, 1 cm2
+ const L_m=state.L*0.01;
+ const e_vm=state.V/L_m;
+ const I_amp=Math.abs(state.z)*F*A_m2*u_m2_vs*c_mol_m3*e_vm;
+ return {current_mA:I_amp*1000,field_vcm:state.V/state.L};
+}
+function updateUI(geometryChanged=false){
+ updateButtonGroups();
+ $('voltageOut').textContent=`${fmt(state.V,1)} V`;
+ $('countOut').textContent=`${state.N}개`;
+ $('chargeOut').textContent=chargeLabel();
+ $('mobilityOut').textContent=`${state.u} × 10⁻⁸`;
+ $('distanceOut').textContent=`${state.L} cm`;
+ $('circuitV').textContent=`${fmt(state.V,1)} V`;
+ $('count').value=String(state.N);$('mobility').value=String(state.u);
+ if(geometryChanged)updateGeometry();
+ if(particles.length!==state.N)addParticles();else updateParticleLooks();
+ updatePositions();
+ const r=calculate();
+ $('current').textContent=fmt(r.current_mA,3);
+ $('fieldValue').textContent=`${fmt(r.field_vcm,2)} V/cm`;
+ $('currentBar').style.width=`${Math.min(100,r.current_mA/3.86*100)}%`;
+ const active=state.V>0&&state.z!==0&&state.u>0&&state.N>0;
+ const direction=active?(state.z>0?'왼쪽 (−극 방향)':'오른쪽 (+극 방향)'):'이동 없음';
+ $('directionValue').textContent=direction;
+ $('driftCaption').textContent=active?(state.z>0?'양이온 ←':'음이온 →'):'이온 이동 없음';
+ $('driftCaption').setAttribute('fill',state.z>0?'#2874c7':state.z<0?'#e45a48':'#6f8190');
+ $('fieldGroup').style.opacity=state.V>0?'1':'.16';
+}
+function step(now){
+ if(lastTime===null)lastTime=now;
+ const dt=Math.min((now-lastTime)/1000,0.08);lastTime=now;
+ if(playing&&state.N&&state.z!==0&&state.V>0&&state.u>0){
+  // Deliberately sped up for human viewing; physical current uses SI units above.
+  const signed=state.z>0?-1:1;
+  const speedFrac=0.075*state.u*state.V/state.L;
+  for(const p of particles){p.frac=(p.frac+signed*speedFrac*dt+1)%1;}
+  updatePositions();
+ }
+ requestAnimationFrame(step);
+}
+function updatePlayButton(){ $('toggle').textContent=playing?'⏸ 일시정지':'▶ 재생';$('toggle').setAttribute('aria-pressed',String(playing));}
+function init(){
+ setupButtons();
+ $('count').addEventListener('input',event=>{state.N=Number(event.target.value);updateUI();});
+ $('mobility').addEventListener('input',event=>{state.u=Number(event.target.value);updateUI();});
+ $('toggle').addEventListener('click',()=>{playing=!playing;updatePlayButton();});
+ $('reset').addEventListener('click',()=>{Object.assign(state,defaults);playing=true;lastTime=null;updateGeometry();addParticles();updateUI();updatePlayButton();});
+ updateGeometry();addParticles();updateUI();updatePlayButton();requestAnimationFrame(step);
+}
+init();
+})();
+</script>
+</body>
+</html>
